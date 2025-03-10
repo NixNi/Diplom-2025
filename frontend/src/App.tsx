@@ -15,7 +15,6 @@ import D3Viewer from "./components/D3Viewer";
 // import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 // import { useEffect } from "react";
 
-
 function App() {
   // const dispatch = useDispatch<ThunkDispatch<unknown, unknown, AnyAction>>();
   // useEffect(() => { dispatch(updateUserAsync()); },[dispatch]);
@@ -29,7 +28,7 @@ function App() {
       <Navigation />
       <div className="pt-12">
         <Routes>
-          <Route path="/" element={<D3Viewer modelName="cube" />}/>
+          <Route path="/" element={<D3Viewer modelName="tree1" />} />
           {/* <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

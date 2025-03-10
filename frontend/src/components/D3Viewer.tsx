@@ -1,74 +1,97 @@
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { GLTFLoader, TrackballControls } from 'three/examples/jsm/Addons.js';
+import { useEffect, useState, useRef } from "react";
+import * as THREE from "three";
+import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
 
 const D3Viewer = ({ modelName }: { modelName: string }) => {
-    const mountRef = useRef<HTMLDivElement>(null);
+  const mountRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(0);
+  const [modelLoaded, setModelLoaded] = useState(false);
+  const sceneRef = useRef(new THREE.Scene());
 
-    useEffect(() => {
-        if (!mountRef.current) return; // Check if mountRef.current is null
+  useEffect(() => {
+    if (mountRef.current === null) return;
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-        camera.position.set(20, -20, 20);
-        camera.lookAt(scene.position);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(600, 600);
+    const scene = sceneRef.current;
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    camera.position.set(20, -20, 20);
+    camera.lookAt(scene.position);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(600, 600);
+    renderer.setClearColor(0x3f3f3f, 1);
 
-        // // Append the renderer's DOM element to the mountRef
-        mountRef.current.appendChild(renderer.domElement);
+    mountRef.current.replaceChildren(renderer.domElement);
 
+    const ambientLight = new THREE.AmbientLight(0x808080);
+    scene.add(ambientLight);
 
-        // const cubegem = new THREE.BoxGeometry(2, 2, 2);
-        // const mat = new THREE.MeshToonMaterial({color: 0xff333f})
-        // const cube = new THREE.Mesh(cubegem, mat)
-        // // scene.add(cube)
-        
-        const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
-        scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 5, 5).normalize();
+    scene.add(directionalLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 5, 5).normalize();
-        scene.add(directionalLight);
+    const controls = new TrackballControls(camera, renderer.domElement);
+    controls.rotateSpeed = 1.0;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
+    controls.noZoom = false;
+    controls.noPan = false;
+    controls.staticMoving = false;
+    controls.dynamicDampingFactor = 0.2;
 
-        const controls = new TrackballControls(camera, renderer.domElement);
-        controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.8;
-        controls.noZoom = false;
-        controls.noPan = false;
-        controls.staticMoving = false;
-        controls.dynamicDampingFactor = 0.2;
+    const loader = new GLTFLoader();
+    fetch(`http://localhost:8046/api/models/file/${modelName}`)
+      .then((response) => response.arrayBuffer())
+      .then((data) => {
+        loader.parse(
+          data,
+          "",
+          (gltf) => {
+            scene.add(gltf.scene);
+            setModelLoaded(true);
+          },
+          (error) => {
+            console.error("Error parsing model:", error);
+          }
+        );
+      })
+      .catch((error) => {
+        console.error("Error loading model:", error);
+      });
 
-        const loader = new GLTFLoader();
-        fetch(`http://localhost:8046/api/models/file/${modelName}`)
-            .then((response) => response.arrayBuffer())
-            .then((data) => {
-                loader.parse(data, '', (gltf) => {
-                    scene.add(gltf.scene);
-                }, (error) => {
-                    console.error('Error parsing model:', error);
-                });
-            })
-            .catch((error) => {
-                console.error('Error loading model:', error);
-            });
+    const animate = () => {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
 
-        const animate = () => {
-            requestAnimationFrame(animate);
-            controls.update()
-            renderer.render(scene, camera);
-        };
-        animate();
+    return () => {
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+    };
+  }, [modelName]);
 
-        return () => {
-            if (mountRef.current) {
-                mountRef.current.removeChild(renderer.domElement);
-            }
-        };
-    }, [modelName]);
+  useEffect(() => {
+    if (modelLoaded) {
+      const tree = sceneRef.current.getObjectByName("Cube");
+      if (tree) {
+        tree.position.x = position;
+      }
+    }
+  }, [position, modelLoaded]);
 
-    return <div ref={mountRef}></div>;
+  return (
+    <div className="flex flex-1">
+      <div ref={mountRef} />
+      <div>
+        <input
+          type="number"
+          value={position}
+          onChange={(e) => setPosition(Number(e.target.value))}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default D3Viewer;
