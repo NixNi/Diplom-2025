@@ -1,15 +1,10 @@
-import pgPromise from "pg-promise";
 
-const pgp = pgPromise();
+import {Database} from "bun:sqlite"
+import path from "path";
 
-const dbConfig = {
-  user: "postgres",
-  password: "1234",
-  database: "postgres",
-  host: "localhost",
-  port: 8047, // You may need to adjust the port
-};
+const dbPath = path.resolve(__dirname, "../../db/models.db");
+console.log(`Попытка подключения к базе данных по пути: ${dbPath}`);
 
-const db = pgp(dbConfig);
+const db = new Database(dbPath);
 
 export default db;

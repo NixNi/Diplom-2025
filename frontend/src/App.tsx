@@ -28,7 +28,7 @@ function App() {
       <Navigation />
       <div className="pt-12">
         <Routes>
-          <Route path="/" element={<D3Viewer modelName="tree1" />} />
+          <Route path="/" element={<D3Viewer modelName="tree" />} />
           {/* <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

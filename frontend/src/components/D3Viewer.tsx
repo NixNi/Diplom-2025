@@ -39,8 +39,15 @@ const D3Viewer = ({ modelName }: { modelName: string }) => {
     controls.dynamicDampingFactor = 0.2;
 
     const loader = new GLTFLoader();
-    fetch(`http://localhost:8046/api/models/file/${modelName}`)
-      .then((response) => response.arrayBuffer())
+
+    // Fetch the model from the server
+    fetch(`http://localhost:8046/api/models/db/${modelName}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch model: ${response.statusText}`);
+        }
+        return response.arrayBuffer();
+      })
       .then((data) => {
         // Remove the previous model if it exists
         if (modelRef.current) {
@@ -48,9 +55,10 @@ const D3Viewer = ({ modelName }: { modelName: string }) => {
           modelRef.current = null;
         }
 
+        // Parse the ArrayBuffer as a GLB file
         loader.parse(
           data,
-          "",
+          "", // Base path (empty since we're loading a binary file)
           (gltf) => {
             modelRef.current = gltf.scene; // Store the reference to the loaded model
             scene.add(gltf.scene);

@@ -3,8 +3,6 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 
-// import db from "./services/pool";
-
 import d3ModelRouter from "./routes/d3Model";
 
 const server = express();
@@ -22,11 +20,6 @@ const corsOptions = {
   credentials: true,
 };
 
-// db.connect()
-//   .then(() => console.log("Connection has been established successfully."))
-//   .catch((error: Error) =>
-//     console.error("Unable to connect to the database:", error)
-//   );
 
 const middleware = [
   cors(corsOptions),
