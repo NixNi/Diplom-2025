@@ -41,14 +41,10 @@ const D3Viewer = ({ modelName }: { modelName: string }) => {
     const loader = new GLTFLoader();
 
     // Fetch the model from the server
-    fetch(`http://localhost:8046/api/models/db/${modelName}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch model: ${response.statusText}`);
-        }
-        return response.arrayBuffer();
-      })
+    fetch(`http://localhost:8046/api/models/${modelName}`)
+      .then((response) => response.arrayBuffer())
       .then((data) => {
+        console.log(data)
         // Remove the previous model if it exists
         if (modelRef.current) {
           scene.remove(modelRef.current);
