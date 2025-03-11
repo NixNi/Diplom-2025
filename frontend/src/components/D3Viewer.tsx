@@ -4,9 +4,10 @@ import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
 
 const D3Viewer = ({ modelName }: { modelName: string }) => {
   const mountRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef(new THREE.Scene());
+  const modelRef = useRef<THREE.Object3D | null>(null);
   const [position, setPosition] = useState(0);
   const [modelLoaded, setModelLoaded] = useState(false);
-  const sceneRef = useRef(new THREE.Scene());
 
   useEffect(() => {
     if (mountRef.current === null) return;
@@ -41,10 +42,17 @@ const D3Viewer = ({ modelName }: { modelName: string }) => {
     fetch(`http://localhost:8046/api/models/file/${modelName}`)
       .then((response) => response.arrayBuffer())
       .then((data) => {
+        // Remove the previous model if it exists
+        if (modelRef.current) {
+          scene.remove(modelRef.current);
+          modelRef.current = null;
+        }
+
         loader.parse(
           data,
           "",
           (gltf) => {
+            modelRef.current = gltf.scene; // Store the reference to the loaded model
             scene.add(gltf.scene);
             setModelLoaded(true);
           },
@@ -65,6 +73,8 @@ const D3Viewer = ({ modelName }: { modelName: string }) => {
     animate();
 
     return () => {
+      // Cleanup the scene and renderer
+      scene.clear();
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
@@ -72,8 +82,8 @@ const D3Viewer = ({ modelName }: { modelName: string }) => {
   }, [modelName]);
 
   useEffect(() => {
-    if (modelLoaded) {
-      const tree = sceneRef.current.getObjectByName("Cube");
+    if (modelLoaded && modelRef.current) {
+      const tree = modelRef.current.getObjectByName("Cube");
       if (tree) {
         tree.position.x = position;
       }
