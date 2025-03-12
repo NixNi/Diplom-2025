@@ -14,10 +14,7 @@ export async function addModel(name: string, data: Buffer) {
   query.run(name, data);
 }
 
-export async function updateModelByName(
-  modelName: string,
-  newData: Buffer
-) {
+export async function updateModelByName(modelName: string, newData: Buffer) {
   const query = db.query(`UPDATE models SET data = ? WHERE name = ?`);
   query.run(newData, modelName);
 }
@@ -25,4 +22,10 @@ export async function updateModelByName(
 export async function deleteModelByName(modelName: string) {
   const query = db.query(`DELETE FROM models WHERE name = ?`);
   query.run(modelName);
+}
+
+export async function getAllModelNames() {
+  const query = db.query(`SELECT id, name FROM models`);
+  const result = query.all() as { id: number; name: string }[];
+  return result;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
 
-const D3Viewer = ({ modelName }: { modelName: string }) => {
+const Example = ({ modelName }: { modelName: string }) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef(new THREE.Scene());
   const modelRef = useRef<THREE.Object3D | null>(null);
@@ -108,4 +108,4 @@ const D3Viewer = ({ modelName }: { modelName: string }) => {
   );
 };
 
-export default D3Viewer;
+export default Example;
