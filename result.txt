@@ -1,0 +1,129 @@
+Содержимое файла config.ts представлено следующим кодом:
+require("dotenv").config();
+
+const options = {
+  port: process.env.PORT,
+  env: process.env.NODE_ENV,
+  secret: process.env.SECRET_JWT || "secretKey",
+};
+
+export default options;
+
+
+Содержимое файла index.ts представлено следующим кодом:
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+
+import d3ModelRouter from "./routes/d3Model";
+
+const server = express();
+const port = process.env.PORT || 8046;
+const whitelist = ["http://localhost:8046", "http://localhost:8045"];
+const corsOptions = {
+  origin: (origin: any, callback: any) => {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+      // callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+
+const middleware = [
+  cors(corsOptions),
+  bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+    parameterLimit: 50000,
+  }),
+  bodyParser.json({ limit: "50mb" }),
+  cookieParser(),
+];
+
+middleware.forEach((it) => server.use(it));
+
+server.get("/", (request, response) => {
+  response.send("It is working api, you check manually");
+});
+
+server.use("/api/models", d3ModelRouter);
+
+server.listen(port, () => console.log(`Running on port ${port}`));
+
+
+Содержимое файла errorHandler.ts представлено следующим кодом:
+import { Response } from "express";
+
+export default async function errorHandler(res: Response, fun: Function) {
+  try {
+    await fun();
+  } catch (err) {
+    console.log(err);
+    res.json({ status: "error", error: err });
+  }
+}
+
+
+Содержимое файла d3Model.model.ts представлено следующим кодом:
+import db from "src/services/pool";
+import model from "src/types/model";
+
+
+export async function getModelByName(modelName: string) {
+  const query = db.query(`SELECT * FROM models WHERE name = '${modelName}'`);
+  const result = query.get() as (model | null);
+  if (!result) throw Error(`Object ${modelName} not found in the database`)
+  const modelData = result.data;
+  return modelData;
+}
+
+
+
+
+Содержимое файла d3Model.ts представлено следующим кодом:
+import express from "express";
+import {
+  getModelByName,
+} from "../models/d3Model.model";
+import errorHandler from "src/hooks/errorHandler";
+
+const d3ModelRouter = express.Router();
+
+d3ModelRouter.get("/:modelName", async (req, res) => {
+  const modelName = req.params.modelName;
+    await errorHandler(res, async () => {
+      const model = await getModelByName(modelName);
+      res.setHeader('Content-Type', 'application/octet-stream');
+      res.send(Buffer.from(model));
+    });
+});
+
+export default d3ModelRouter;
+
+
+Содержимое файла pool.ts представлено следующим кодом:
+
+import {Database} from "bun:sqlite"
+import path from "path";
+
+const dbPath = path.resolve(__dirname, "../../db/models.db");
+console.log(`Попытка подключения к базе данных по пути: ${dbPath}`);
+
+const db = new Database(dbPath);
+
+export default db;
+
+
+Содержимое файла model.ts представлено следующим кодом:
+export default interface model {
+  id: number;
+  name: string;
+  data: ArrayBuffer;
+}
+
+

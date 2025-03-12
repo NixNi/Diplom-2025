@@ -13,7 +13,7 @@ def _traverse_directory(path, result):
                 result.write(f"Содержимое файла {file} представлено следующим кодом:\n{content}\n\n")
 
 # Example usage:
-directory_path = './src'
+directory_path = './backend/src'
 result_file_path = 'result.txt'
 
 traverse_directory(directory_path, result_file_path)
