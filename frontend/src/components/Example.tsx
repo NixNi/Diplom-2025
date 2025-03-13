@@ -44,7 +44,7 @@ const Example = ({ modelName }: { modelName: string }) => {
     fetch(`http://localhost:8046/api/models/${modelName}`)
       .then((response) => response.arrayBuffer())
       .then((data) => {
-        console.log(data)
+        // console.log(data)
         // Remove the previous model if it exists
         if (modelRef.current) {
           scene.remove(modelRef.current);

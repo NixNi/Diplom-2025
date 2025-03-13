@@ -5,6 +5,6 @@ export default async function errorHandler(res: Response, fun: Function) {
     await fun();
   } catch (err) {
     console.log(err);
-    res.json({ status: "error", error: err });
+    res.status(400).json({ status: "error", message: err });
   }
 }

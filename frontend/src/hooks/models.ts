@@ -10,9 +10,12 @@ const useModelData = (modelName: string) => {
   useEffect(() => {
     const fetchModelData = async () => {
       try {
+        setIsError(false);
+        if (modelName === "") throw new Error("Choose a model");
         const response = await fetch(
           `http://localhost:8046/api/models/${modelName}`
         );
+        response.status;
         if (!response.ok) throw new Error("Failed to fetch model data");
         const data = await response.arrayBuffer();
         setModelData(data);

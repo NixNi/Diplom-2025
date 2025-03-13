@@ -7,14 +7,12 @@ import {
 } from "three";
 import { TrackballControls } from "three/examples/jsm/Addons.js";
 
-//adding lights, camera, and controls to scene
-export default function addLCC(
+export default function setupLCC(
   scene: Scene,
   renderer: WebGLRenderer,
   camera: PerspectiveCamera,
   controls: TrackballControls
 ) {
-  
   camera.position.set(20, -20, 20);
   camera.lookAt(scene.position);
   renderer.setClearColor(0x3f3f3f, 1);
@@ -26,7 +24,6 @@ export default function addLCC(
   directionalLight.position.set(5, 5, 5).normalize();
   scene.add(directionalLight);
 
-  
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 0.8;
@@ -34,5 +31,4 @@ export default function addLCC(
   controls.noPan = false;
   controls.staticMoving = false;
   controls.dynamicDampingFactor = 0.2;
-
 }

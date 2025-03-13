@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ServerResponse } from "../types/server"; // Предположим, что у вас есть тип ServerResponse
+import { ServerDataResponse, ServerResponse } from "../types/server"; // Предположим, что у вас есть тип ServerResponse
 
 export const modelApi = createApi({
   reducerPath: "model/api",
@@ -7,7 +7,7 @@ export const modelApi = createApi({
     baseUrl: "/api/models", // Базовый URL для всех запросов
   }),
   endpoints: (build) => ({
-    getAllModelNames: build.query<{ id: number; name: string }[], void>({
+    getAllModelNames: build.query<ServerDataResponse<{ id: number; name: string }[]>, void>({
       query: () => ({
         url: "/",
       }),

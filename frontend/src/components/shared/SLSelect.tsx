@@ -2,7 +2,7 @@ export interface SLSelectProps {
   text: string;
   name: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options?: [string, number][];
+  options?: Array<{ value: string; name: string }>;
   value?: string;
 }
 
@@ -20,8 +20,8 @@ export default function SLSelect(props: SLSelectProps) {
         id={props.name}
       >
         {props.options?.map((option, index) => (
-          <option key={index} value={option[1]}>
-            {option[0]}
+          <option key={index} value={option.value}>
+            {option.name}
           </option>
         ))}
       </select>

@@ -17,7 +17,7 @@ function loadGlbFileToDb(dbPath, filePath, fileName) {
 
     // Читаем файл .glb
     const fileData = readFileSync(filePath);
-    console.log(fileData)
+    // console.log(fileData)
     // const data = fileData.buffer.slice(fileData.byteOffset, fileData.byteLength);
     // console.log(data)
     // Вставляем данные в таблицу

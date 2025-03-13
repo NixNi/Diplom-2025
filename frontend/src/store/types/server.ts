@@ -1,4 +1,10 @@
-export interface ServerResponse{
+export interface ServerResponse {
   status: string;
-  text: string;
+  message: string;
+}
+
+export interface ServerDataResponse<T> {
+  status: string;
+  message: string;
+  data?: T;
 }
