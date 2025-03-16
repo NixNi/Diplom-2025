@@ -2,32 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
 import setupLCC from "./additions/setupLCC";
-import useModelData from "../hooks/models";
 
-interface ModelViewer {
-  modelName: string;
+interface ModelPreview {
+  model: ArrayBuffer;
   size?: {
     x: number;
     y: number;
   };
 }
 
-const ModelViewer = ({ modelName, size }: ModelViewer) => {
+const ModelPreview = ({ model, size }: ModelPreview) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef(new THREE.Scene());
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   //TODO: ref for renderer and controls
 
-  const {
-    modelData,
-    isLoading,
-    isError,
-    errorMessage: loaderError,
-  } = useModelData(modelName);
-
   useEffect(() => {
-    if (mountRef.current === null || isLoading || isError || !modelData) return;
+    if (mountRef.current === null) return;
     const mount = mountRef.current;
     const scene = sceneRef.current;
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -53,19 +45,19 @@ const ModelViewer = ({ modelName, size }: ModelViewer) => {
     }
 
     // Парсим ArrayBuffer как GLB файл
-    if (!isLoading || !isError)
-      loader.parse(
-        modelData,
-        "",
-        (gltf) => {
-          modelRef.current = gltf.scene;
-          scene.add(gltf.scene);
-        },
-        (error) => {
-          // console.error("Error parsing model:", error);
-          setErrorMessage("Error parsing model: " + error.message);
-        }
-      );
+
+    loader.parse(
+      model,
+      "",
+      (gltf) => {
+        modelRef.current = gltf.scene;
+        scene.add(gltf.scene);
+      },
+      (error) => {
+        // console.error("Error parsing model:", error);
+        setErrorMessage("Error parsing model: " + error.message);
+      }
+    );
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -83,22 +75,22 @@ const ModelViewer = ({ modelName, size }: ModelViewer) => {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [modelData, isLoading, isError, size]);
+  }, [model, size]);
 
   return (
     <div className="relative">
       <div ref={mountRef} />
-      {(errorMessage || loaderError) && (
+      {errorMessage && (
         <div
           style={{ width: size?.x || 600, height: size?.y || 600 }}
           className="flex filler"
         >
           <div className="secondary m-auto p-10 font-bold text-5">
-            {loaderError || errorMessage}
+            {errorMessage}
           </div>
         </div>
       )}
     </div>
   );
 };
-export default ModelViewer;
+export default ModelPreview;

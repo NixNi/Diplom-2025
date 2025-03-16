@@ -4,6 +4,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Example from "./components/Example";
 import Viewer from "./pages/Viewer";
+import AddModel from "./pages/AddModel";
 // import Register from "./pages/Register";
 // import Profile from "./pages/Profile";
 // import { useAppSelector } from "./hooks/redux";
@@ -29,8 +30,9 @@ function App() {
       <Navigation />
       <div className="pt-12">
         <Routes>
-          <Route path="/" element={<Viewer/>} />
+          <Route path="/" element={<Viewer />} />
           <Route path="/example" element={<Example modelName="tree" />} />
+          <Route path="/addModel" element={<AddModel />} />
           {/* <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

@@ -7,7 +7,10 @@ export const modelApi = createApi({
     baseUrl: "/api/models", // Базовый URL для всех запросов
   }),
   endpoints: (build) => ({
-    getAllModelNames: build.query<ServerDataResponse<{ id: number; name: string }[]>, void>({
+    getAllModelNames: build.query<
+      ServerDataResponse<{ id: number; name: string }[]>,
+      void
+    >({
       query: () => ({
         url: "/",
       }),
@@ -32,11 +35,20 @@ export const modelApi = createApi({
       ServerResponse,
       { name: string; data: ArrayBuffer }
     >({
-      query: (model) => ({
-        url: "/",
-        method: "POST",
-        body: model,
-      }),
+      query: (model) => {
+        const formData = new FormData();
+        formData.append("name", model.name);
+        formData.append(
+          "data",
+          new Blob([model.data], { type: "application/octet-stream" })
+        );
+
+        return {
+          url: "/",
+          method: "POST",
+          body: formData,
+        };
+      },
     }),
 
     updateModelByName: build.mutation<
@@ -59,10 +71,9 @@ export const modelApi = createApi({
   }),
 });
 
-
 export const {
   useGetAllModelNamesQuery,
-//   useGetModelByNameQuery,
+  //   useGetModelByNameQuery,
   useAddModelMutation,
   useUpdateModelByNameMutation,
   useDeleteModelByNameMutation,

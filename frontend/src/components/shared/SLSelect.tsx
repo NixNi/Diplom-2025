@@ -2,11 +2,12 @@ export interface SLSelectProps {
   text: string;
   name: string;
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options?: Array<{ value: string; name: string }>;
+  options?: Array<{ value: string; name: string; disable?: boolean }>;
   value?: string;
 }
 
 export default function SLSelect(props: SLSelectProps) {
+  //TODO:add options disabling
   return (
     <>
       <label htmlFor={props.name} className="mx-2">

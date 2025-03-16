@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import {
   getModelByName,
   addModel,
@@ -9,6 +10,7 @@ import {
 import errorHandler from "src/hooks/errorHandler";
 
 const d3ModelRouter = express.Router();
+const upload = multer();
 
 // Получение всех имен моделей с их ID
 d3ModelRouter.get("/", async (req, res) => {
@@ -29,8 +31,11 @@ d3ModelRouter.get("/:modelName", async (req, res) => {
 });
 
 // Добавление новой модели
-d3ModelRouter.post("/", async (req, res) => {
-  const { name, data } = req.body;
+d3ModelRouter.post("/", upload.single("data"), async (req, res) => {
+  const { name } = req.body;
+  if (!req.file?.buffer) throw new Error("Model is missing");
+  const data = req.file.buffer; // Получаем бинарные данные из файла
+  // console.log(name, data);
   await errorHandler(res, async () => {
     await addModel(name, data);
     res.json({

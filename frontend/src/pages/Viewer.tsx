@@ -7,17 +7,17 @@ import { useGetAllModelNamesQuery } from "../store/model/model.api";
 export default function Viewer() {
   const [modelName, setModelName] = useState("");
   const [modelOptions, setModelOptions] = useState<
-    Array<{ value: string; name: string }>
+    Array<{ value: string; name: string; disable?: boolean }>
   >([]);
   const { data, isLoading, isError } = useGetAllModelNamesQuery();
 
   useEffect(() => {
     if (isLoading || isError) return;
     setModelOptions([
-      { value: "default", name: "default" },
+      { value: "default", name: "default", disable: true },
       ...(data?.data?.map((it) => ({ value: it.name, name: it.name })) || []),
     ]);
-  }, [isLoading, isError]);
+  }, [isLoading, isError, data?.data]);
 
   return (
     <div>

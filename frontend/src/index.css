@@ -12,6 +12,9 @@ body {
   background-color: #5863F8;
   color:#EFE9F4;
 }
+.filler {
+  background-color: #3f3f3f;
+}
 
 .scrollable-container {
   scrollbar-width: thin !important;
