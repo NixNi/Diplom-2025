@@ -8,10 +8,10 @@ export default function Navigation() {
       </Link>
       <div className="flex gap-2">
         <Link
-          to="/profile"
+          to="/AddModel"
           className="color-zinc-2 no-underline hover:color-emerald-2"
         >
-          Profile
+          Upload
         </Link>
         <Link
           to="/"

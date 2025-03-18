@@ -3,21 +3,21 @@ import {
   useBanUserMutation,
   useSearchByLoginQuery,
   useUnBanUserMutation,
-} from "../store/user/user.api";
-import Er404 from "../components/404";
+} from "../../store/user/user.api";
+import Er404 from "../../components/404";
 import { useGroupsByUserQuery } from "../store/ugr/ugr.api";
 import group from "../store/types/group";
 import { useEffect, useState } from "react";
-import SButton from "../components/shared/SButton";
+import SButton from "../../components/shared/SButton";
 import { useGetPostsByUserQuery } from "../store/post/post.api";
-import Post from "../components/Post";
-import PopUp from "../components/PopUp";
+import Post from "../../components/Post";
+import PopUp from "../../components/PopUp";
 import CreatePost from "./CreatePost";
 import CreateGroup from "./CreateGroup";
-import { useHasAccessRestricted, useHasAdminAccess } from "../hooks/access";
+import { useHasAccessRestricted, useHasAdminAccess } from "../../hooks/access";
 import EditUser from "./EditUser";
 import { useGetAnswersByUserIdQuery } from "../store/answer/answer.api";
-import Answer from "../components/Answer";
+import Answer from "../../components/Answer";
 
 export default function Profile() {
   const { username } = useParams();

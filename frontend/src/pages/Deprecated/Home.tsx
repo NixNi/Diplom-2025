@@ -1,5 +1,5 @@
 
-import Post from '../components/Post';
+import Post from '../../components/Post';
 import { useGetPostsSBDQuery } from '../store/post/post.api';
 
 export default function Home() {

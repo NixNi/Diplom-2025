@@ -20,6 +20,7 @@ const ModelPreview = ({ model, size }: ModelPreview) => {
 
   useEffect(() => {
     if (mountRef.current === null) return;
+    setErrorMessage(null);
     const mount = mountRef.current;
     const scene = sceneRef.current;
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -78,8 +79,8 @@ const ModelPreview = ({ model, size }: ModelPreview) => {
   }, [model, size]);
 
   return (
-    <div className="relative">
-      <div ref={mountRef} />
+    <div>
+      {!errorMessage && <div ref={mountRef} />}
       {errorMessage && (
         <div
           style={{ width: size?.x || 600, height: size?.y || 600 }}
