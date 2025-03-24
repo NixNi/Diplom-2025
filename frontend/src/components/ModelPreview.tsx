@@ -5,13 +5,14 @@ import setupLCC from "./additions/setupLCC";
 
 interface ModelPreview {
   model: ArrayBuffer;
+  setExternalError?: (text: string | null) => void;
   size?: {
     x: number;
     y: number;
   };
 }
-
-const ModelPreview = ({ model, size }: ModelPreview) => {
+//TODO:fix model reloading error, canvas does not creates after file with error was loaded
+const ModelPreview = ({ model, size, setExternalError }: ModelPreview) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef(new THREE.Scene());
   const modelRef = useRef<THREE.Object3D | null>(null);
@@ -19,8 +20,11 @@ const ModelPreview = ({ model, size }: ModelPreview) => {
   //TODO: ref for renderer and controls
 
   useEffect(() => {
-    if (mountRef.current === null) return;
     setErrorMessage(null);
+    if (setExternalError) setExternalError(null);
+    // Сбрасываем состояние ошибки перед каждой загрузкой модели
+
+    if (mountRef.current === null) return;
     const mount = mountRef.current;
     const scene = sceneRef.current;
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -46,19 +50,26 @@ const ModelPreview = ({ model, size }: ModelPreview) => {
     }
 
     // Парсим ArrayBuffer как GLB файл
-
-    loader.parse(
-      model,
-      "",
-      (gltf) => {
-        modelRef.current = gltf.scene;
-        scene.add(gltf.scene);
-      },
-      (error) => {
-        // console.error("Error parsing model:", error);
-        setErrorMessage("Error parsing model: " + error.message);
-      }
-    );
+    try {
+      loader.parse(
+        model,
+        "",
+        (gltf) => {
+          modelRef.current = gltf.scene;
+          scene.add(gltf.scene);
+        },
+        (error) => {
+          // console.error("Error parsing model:", error);
+          setErrorMessage("Error parsing model: " + error.message);
+          if (setExternalError)
+            setExternalError("Error parsing model: " + error.message);
+        }
+      );
+    } catch (e) {
+      setErrorMessage("Error while trying to parse file");
+      if (setExternalError)
+        setExternalError("Error while trying to parse file");
+    }
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -80,6 +91,7 @@ const ModelPreview = ({ model, size }: ModelPreview) => {
 
   return (
     <div>
+      <p>{errorMessage}</p>
       {!errorMessage && <div ref={mountRef} />}
       {errorMessage && (
         <div

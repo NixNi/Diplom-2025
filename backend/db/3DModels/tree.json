@@ -1,0 +1,78 @@
+{
+    "models": [
+        {
+            "name": "Tree",
+            "position": {
+                "x": true,
+                "y": true,
+                "z": true,
+                "x_limit": [
+                    -10,
+                    10
+                ],
+                "y_limit": [
+                    -10,
+                    10
+                ],
+                "z_limit": [
+                    -10,
+                    10
+                ]
+            },
+            "rotation": {
+                "x": true,
+                "y": true,
+                "z": true,
+                "x_limit": [
+                    -10,
+                    10
+                ],
+                "y_limit": [
+                    -10,
+                    10
+                ],
+                "z_limit": [
+                    -10,
+                    10
+                ]
+            }
+        },
+        {
+            "name": "Sphere",
+            "position": {
+                "x": true,
+                "y": true,
+                "z": true,
+                "x_limit": [
+                    -10,
+                    10
+                ],
+                "y_limit": [
+                    -10,
+                    10
+                ],
+                "z_limit": [
+                    -10,
+                    10
+                ]
+            },
+            "rotation": {
+                "x": true,
+                "y": true,
+                "z": true,
+                "x_limit": [
+                    -10,
+                    10
+                ],
+                "y_limit": [
+                    -10,
+                    10
+                ],
+                "z_limit": [
+                    -10,
+                    10
+                ]
+            }
+        }
+    ]
+}

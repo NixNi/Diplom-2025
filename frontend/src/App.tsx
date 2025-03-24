@@ -2,7 +2,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 // import Home from "./pages/Home";
 // import Login from "./pages/Login";
 import Navigation from "./components/Navigation";
-import Example from "./components/Example";
+import Example from "./pages/Example";
 import Viewer from "./pages/Viewer";
 import AddModel from "./pages/AddModel";
 // import Register from "./pages/Register";

@@ -7,6 +7,7 @@ const AddModel = () => {
   const [modelName, setModelName] = useState("");
   const [modelFile, setModelFile] = useState<ArrayBuffer | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [internalError, setInternalError] = useState<string | null>(null);
   const [addModel, { isLoading }] = useAddModelMutation();
   const navigate = useNavigate();
 
@@ -29,7 +30,10 @@ const AddModel = () => {
       setErrorMessage("Пожалуйста, заполните все поля.");
       return;
     }
-
+    if (internalError) {
+      setErrorMessage("Пожалуйста, загрузите модель без ошибок.");
+      return;
+    }
     try {
       await addModel({ name: modelName, data: modelFile }).unwrap();
       navigate("/"); // Перенаправляем на главную страницу после успешной загрузки
@@ -39,23 +43,23 @@ const AddModel = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Добавить модель</h1>
+    <div className="p-4 flex flex-justify-between">
       <form onSubmit={handleSubmit} className="space-y-4">
+        <h1 className="text-2xl mb-4">Добавить модель</h1>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300">
             Название модели
           </label>
           <input
             type="text"
             value={modelName}
             onChange={(e) => setModelName(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block  px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300">
             Файл модели
           </label>
           <input
@@ -65,23 +69,24 @@ const AddModel = () => {
             required
           />
         </div>
-        {modelFile && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Предпросмотр модели
-            </label>
-            <ModelPreview model={modelFile} />
-          </div>
-        )}
+
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <button
           type="submit"
           disabled={isLoading}
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md secondary-hover"
         >
           {isLoading ? "Загрузка..." : "Добавить модель"}
         </button>
       </form>
+      {modelFile && (
+        <div>
+          <label className="block text-sm font-medium text-gray-300">
+            Предпросмотр модели
+          </label>
+          <ModelPreview model={modelFile} setExternalError={setInternalError} />
+        </div>
+      )}
     </div>
   );
 };
