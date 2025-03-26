@@ -21,7 +21,7 @@ export default function Viewer() {
 
   return (
     <div>
-      <ModelViewer modelName={modelName} />
+      <ModelViewer modelName={modelName} modelControlsEnable />
       {!isLoading && (
         <SLSelect
           name="modelName"

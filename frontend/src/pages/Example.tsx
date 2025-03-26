@@ -78,7 +78,7 @@ const Example = ({ modelName }: { modelName: string }) => {
 
     return () => {
       // Cleanup the scene and renderer
-      scene.clear();
+      scene.clear(); 
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }

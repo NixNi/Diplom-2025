@@ -3,28 +3,44 @@ import * as THREE from "three";
 import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
 import setupLCC from "./additions/setupLCC";
 import useModelData from "../hooks/models";
-
 interface ModelViewer {
   modelName: string;
   size?: {
     x: number;
     y: number;
   };
+  modelControlsEnable: boolean;
 }
 
-const ModelViewer = ({ modelName, size }: ModelViewer) => {
+interface xyz {
+  x?: number;
+  y?: number;
+  z?: number;
+}
+interface modelPositions {
+  models: Array<{
+    name: string;
+    position?: xyz;
+    rotation?: xyz;
+  }>;
+}
+
+const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef(new THREE.Scene());
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [positions, setPositions] = useState<modelPositions>({ models: [] });
+  const [modelLoaded, setModelLoaded] = useState(false);
   //TODO: ref for renderer and controls
 
   const {
     modelData,
+    modelControls,
     isLoading,
     isError,
     errorMessage: loaderError,
-  } = useModelData(modelName);
+  } = useModelData(modelName, modelControlsEnable);
 
   useEffect(() => {
     if (mountRef.current === null || isLoading || isError || !modelData) return;
@@ -51,7 +67,7 @@ const ModelViewer = ({ modelName, size }: ModelViewer) => {
       scene.remove(modelRef.current);
       modelRef.current = null;
     }
-
+    setModelLoaded(false);
     // Парсим ArrayBuffer как GLB файл
     if (!isLoading || !isError)
       loader.parse(
@@ -60,6 +76,7 @@ const ModelViewer = ({ modelName, size }: ModelViewer) => {
         (gltf) => {
           modelRef.current = gltf.scene;
           scene.add(gltf.scene);
+          setModelLoaded(true);
         },
         (error) => {
           // console.error("Error parsing model:", error);
@@ -85,8 +102,25 @@ const ModelViewer = ({ modelName, size }: ModelViewer) => {
     };
   }, [modelData, isLoading, isError, size]);
 
+  useEffect(() => {
+    if (modelLoaded && modelRef.current) {
+      positions?.models.forEach((it) => {
+        const part = modelRef.current?.getObjectByName(it.name);
+        if (part) {
+          if (it.position && it.position.x) {
+            part.position.x = it.position.x;
+          }
+        }
+      });
+      // const tree = modelRef.current.getObjectByName("Cube");
+      // if (tree) {
+      //   tree.position.x = position;
+      // }
+    }
+  }, [positions, modelLoaded]);
+
   return (
-    <div className="relative">
+    <div className="relative flex">
       <div ref={mountRef} />
       {(errorMessage || loaderError) && (
         <div
@@ -96,6 +130,58 @@ const ModelViewer = ({ modelName, size }: ModelViewer) => {
           <div className="secondary m-auto p-10 font-bold text-5">
             {loaderError || errorMessage}
           </div>
+        </div>
+      )}
+      {modelControlsEnable && modelControls?.models && (
+        <div>
+          {modelControls.models.map((it) => {
+            return (
+              <div key={it.name}>
+                <p>{it.name}</p>
+                {it.position && (
+                  <div>
+                    <p>Position</p>
+                    {(
+                      Object.keys(it.position) as Array<
+                        keyof typeof it.position
+                      >
+                    ).map((euler) => (
+                      <div key={euler}>
+                        <span>{euler}</span>
+                        <input
+                          type="number"
+                          min={Number(it.position?.[euler]?.[0]) || 1000}
+                          max={Number(it.position?.[euler]?.[1]) || 1000}
+                          onChange={(e) => {
+                            const part = positions.models.find(
+                              (fit) => fit.name === it.name
+                            ) || { name: it.name };
+
+                            part.position = part?.position || {};
+                            part.position[euler] = Number(e.target.value);
+                            console.log([
+                              ...positions.models.filter(
+                                (fit) => fit.name !== it.name
+                              ),
+                              part,
+                            ]);
+                            setPositions({
+                              models: [
+                                ...positions.models.filter(
+                                  (fit) => fit.name !== it.name
+                                ),
+                                part,
+                              ],
+                            });
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
