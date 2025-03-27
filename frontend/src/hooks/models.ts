@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 interface xyzController {
-  x?: [Number, Number];
-  y?: [Number, Number];
-  z?: [Number, Number];
+  x?: [number, number];
+  y?: [number, number];
+  z?: [number, number];
 }
 interface modelControls {
   models: Array<{
@@ -43,7 +43,7 @@ const useModelData = (modelName: string, controls?: boolean) => {
           );
           const cdata = await responseControls.arrayBuffer();
           const json = JSON.parse(new TextDecoder().decode(cdata));
-          console.log(json);
+          // console.log(json);
           setModelControls(json);
         }
       } catch (error) {

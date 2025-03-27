@@ -76,7 +76,15 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
         (gltf) => {
           modelRef.current = gltf.scene;
           scene.add(gltf.scene);
+          // console.log(scene);
           setModelLoaded(true);
+          gltf.scene.traverse(function (child) {
+            if (child.type === "Mesh") {
+              // console.log(child);
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
         },
         (error) => {
           // console.error("Error parsing model:", error);
@@ -139,6 +147,12 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
       {modelControlsEnable && modelControls?.models && (
         <div>
           {modelControls.models.map((it) => {
+            const part = positions.models.find(
+              (fit) => fit.name === it.name
+            ) || { name: it.name };
+            const filteredModels = positions.models.filter(
+              (fit) => fit.name !== it.name
+            );
             return (
               <div
                 key={it.name}
@@ -154,11 +168,11 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
                           keyof typeof it.position
                         >
                       ).map((axis) => {
-                        const part = positions.models.find(
-                          (fit) => fit.name === it.name
-                        ) || { name: it.name };
                         return (
-                          <div key={axis} className="flex flex-justify-between">
+                          <div
+                            key={`pos-${axis}`}
+                            className="flex flex-justify-between"
+                          >
                             <span>{axis}</span>
                             <input
                               type="number"
@@ -170,12 +184,7 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
                                 part.position = part?.position || {};
                                 part.position[axis] = Number(e.target.value);
                                 setPositions({
-                                  models: [
-                                    ...positions.models.filter(
-                                      (fit) => fit.name !== it.name
-                                    ),
-                                    part,
-                                  ],
+                                  models: [...filteredModels, part],
                                 });
                               }}
                             />
@@ -192,7 +201,10 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
                           keyof typeof it.rotation
                         >
                       ).map((axis) => (
-                        <div key={axis} className="flex flex-justify-between">
+                        <div
+                          key={`rot-${axis}`}
+                          className="flex flex-justify-between"
+                        >
                           <span>{axis}</span>
                           <input
                             type="number"
@@ -200,18 +212,10 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
                             max={Number(it.rotation?.[axis]?.[1]) || 1000}
                             step={0.1}
                             onChange={(e) => {
-                              const part = positions.models.find(
-                                (fit) => fit.name === it.name
-                              ) || { name: it.name };
                               part.rotation = part?.rotation || {};
                               part.rotation[axis] = Number(e.target.value);
                               setPositions({
-                                models: [
-                                  ...positions.models.filter(
-                                    (fit) => fit.name !== it.name
-                                  ),
-                                  part,
-                                ],
+                                models: [...filteredModels, part],
                               });
                             }}
                           />
