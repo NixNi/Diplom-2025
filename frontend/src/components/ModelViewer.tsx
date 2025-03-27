@@ -107,15 +107,19 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
       positions?.models.forEach((it) => {
         const part = modelRef.current?.getObjectByName(it.name);
         if (part) {
-          if (it.position && it.position.x) {
-            part.position.x = it.position.x;
+          if (it.position) {
+            if (it.position.x) part.position.x = it.position.x;
+            if (it.position.y) part.position.y = it.position.y;
+            if (it.position.z) part.position.z = it.position.z;
+          }
+
+          if (it.rotation) {
+            if (it.rotation.x) part.rotation.x = it.rotation.x;
+            if (it.rotation.y) part.rotation.y = it.rotation.y;
+            if (it.rotation.z) part.rotation.z = it.rotation.z;
           }
         }
       });
-      // const tree = modelRef.current.getObjectByName("Cube");
-      // if (tree) {
-      //   tree.position.x = position;
-      // }
     }
   }, [positions, modelLoaded]);
 
@@ -136,49 +140,86 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
         <div>
           {modelControls.models.map((it) => {
             return (
-              <div key={it.name}>
+              <div
+                key={it.name}
+                className="border-1 border-white border-solid p-2"
+              >
                 <p>{it.name}</p>
-                {it.position && (
-                  <div>
-                    <p>Position</p>
-                    {(
-                      Object.keys(it.position) as Array<
-                        keyof typeof it.position
-                      >
-                    ).map((euler) => (
-                      <div key={euler}>
-                        <span>{euler}</span>
-                        <input
-                          type="number"
-                          min={Number(it.position?.[euler]?.[0]) || 1000}
-                          max={Number(it.position?.[euler]?.[1]) || 1000}
-                          onChange={(e) => {
-                            const part = positions.models.find(
-                              (fit) => fit.name === it.name
-                            ) || { name: it.name };
-
-                            part.position = part?.position || {};
-                            part.position[euler] = Number(e.target.value);
-                            console.log([
-                              ...positions.models.filter(
-                                (fit) => fit.name !== it.name
-                              ),
-                              part,
-                            ]);
-                            setPositions({
-                              models: [
-                                ...positions.models.filter(
-                                  (fit) => fit.name !== it.name
-                                ),
-                                part,
-                              ],
-                            });
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="flex gap-3">
+                  {it.position && (
+                    <div>
+                      <p>Position</p>
+                      {(
+                        Object.keys(it.position) as Array<
+                          keyof typeof it.position
+                        >
+                      ).map((axis) => {
+                        const part = positions.models.find(
+                          (fit) => fit.name === it.name
+                        ) || { name: it.name };
+                        return (
+                          <div key={axis} className="flex flex-justify-between">
+                            <span>{axis}</span>
+                            <input
+                              type="number"
+                              // value={Number(part.position?.[axis])}
+                              min={Number(it.position?.[axis]?.[0]) || 1000}
+                              max={Number(it.position?.[axis]?.[1]) || 1000}
+                              step={0.1}
+                              onChange={(e) => {
+                                part.position = part?.position || {};
+                                part.position[axis] = Number(e.target.value);
+                                setPositions({
+                                  models: [
+                                    ...positions.models.filter(
+                                      (fit) => fit.name !== it.name
+                                    ),
+                                    part,
+                                  ],
+                                });
+                              }}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {it.rotation && (
+                    <div>
+                      <p>Rotation</p>
+                      {(
+                        Object.keys(it.rotation) as Array<
+                          keyof typeof it.rotation
+                        >
+                      ).map((axis) => (
+                        <div key={axis} className="flex flex-justify-between">
+                          <span>{axis}</span>
+                          <input
+                            type="number"
+                            min={Number(it.rotation?.[axis]?.[0]) || 1000}
+                            max={Number(it.rotation?.[axis]?.[1]) || 1000}
+                            step={0.1}
+                            onChange={(e) => {
+                              const part = positions.models.find(
+                                (fit) => fit.name === it.name
+                              ) || { name: it.name };
+                              part.rotation = part?.rotation || {};
+                              part.rotation[axis] = Number(e.target.value);
+                              setPositions({
+                                models: [
+                                  ...positions.models.filter(
+                                    (fit) => fit.name !== it.name
+                                  ),
+                                  part,
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
