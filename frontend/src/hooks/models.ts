@@ -55,7 +55,7 @@ const useModelData = (modelName: string, controls?: boolean) => {
     };
 
     fetchModelData();
-  }, [modelName]);
+  }, [modelName, controls]);
 
   return { modelData, modelControls, isLoading, isError, errorMessage };
 };

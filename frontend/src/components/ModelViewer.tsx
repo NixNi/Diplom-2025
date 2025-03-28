@@ -11,7 +11,6 @@ interface ModelViewer {
   };
   modelControlsEnable: boolean;
 }
-
 interface xyz {
   x?: number;
   y?: number;
@@ -76,13 +75,54 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
         (gltf) => {
           modelRef.current = gltf.scene;
           scene.add(gltf.scene);
-          // console.log(scene);
           setModelLoaded(true);
           gltf.scene.traverse(function (child) {
             if (child.type === "Mesh") {
-              // console.log(child);
               child.castShadow = true;
               child.receiveShadow = true;
+            }
+            const controlEntry = modelControls?.models?.find(
+              (m) => m.name === child.name
+            );
+            if (controlEntry) {
+              const position: xyz = {};
+              const rotation: xyz = {};
+
+              // Get position values from model for controlled axes
+              if (controlEntry.position) {
+                Object.keys(controlEntry.position).forEach((axis) => {
+                  if (["x", "y", "z"].includes(axis)) {
+                    position[axis as keyof xyz] =
+                      child.position[axis as "x" | "y" | "z"];
+                  }
+                });
+              }
+
+              // Get rotation values from model for controlled axes
+              if (controlEntry.rotation) {
+                Object.keys(controlEntry.rotation).forEach((axis) => {
+                  if (["x", "y", "z"].includes(axis)) {
+                    rotation[axis as keyof xyz] =
+                      child.rotation[axis as "x" | "y" | "z"];
+                  }
+                });
+              }
+
+              // Update state with initial values
+              setPositions((prev) => ({
+                models: [
+                  ...prev.models.filter((m) => m.name !== child.name),
+                  {
+                    name: child.name,
+                    position: Object.keys(position).length
+                      ? position
+                      : undefined,
+                    rotation: Object.keys(rotation).length
+                      ? rotation
+                      : undefined,
+                  },
+                ],
+              }));
             }
           });
         },
@@ -108,7 +148,7 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [modelData, isLoading, isError, size]);
+  }, [modelData, isLoading, isError, size, modelControls?.models]);
 
   useEffect(() => {
     if (modelLoaded && modelRef.current) {
@@ -176,7 +216,7 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
                             <span>{axis}</span>
                             <input
                               type="number"
-                              // value={Number(part.position?.[axis])}
+                              value={Number(part.position?.[axis] || 0)}
                               min={Number(it.position?.[axis]?.[0]) || 1000}
                               max={Number(it.position?.[axis]?.[1]) || 1000}
                               step={0.1}
@@ -208,6 +248,7 @@ const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
                           <span>{axis}</span>
                           <input
                             type="number"
+                            value={Number(part.rotation?.[axis] || 0)}
                             min={Number(it.rotation?.[axis]?.[0]) || 1000}
                             max={Number(it.rotation?.[axis]?.[1]) || 1000}
                             step={0.1}
