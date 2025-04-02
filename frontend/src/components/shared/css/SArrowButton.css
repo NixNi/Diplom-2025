@@ -1,0 +1,49 @@
+.arr-btn {
+  width: 0;
+  height: 0;
+}
+
+.arr-btn-down {
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid rgb(223, 223, 223);
+}
+
+.arr-btn-down:hover {
+  border-top: 20px solid rgb(164, 164, 164);
+}
+
+.arr-btn-up {
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 20px solid rgb(223, 223, 223);
+}
+
+.arr-btn-up:hover {
+  border-bottom: 20px solid rgb(164, 164, 164);
+}
+
+
+
+.arr-btn-right {
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid rgb(223, 223, 223);
+}
+
+.arr-btn-right:hover {
+  border-right: 20px solid rgb(164, 164, 164);
+}
+
+
+
+.arr-btn-left {
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 20px solid rgb(223, 223, 223);
+}
+
+.arr-btn-left:hover {
+  border-left: 20px solid rgb(164, 164, 164);
+}
+

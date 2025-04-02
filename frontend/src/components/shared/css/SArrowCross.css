@@ -1,0 +1,13 @@
+.squire {
+  width: 45px;
+  height: 45px;
+}
+.squire-small {
+  width: 22.5px;
+  height: 22.5px;
+}
+.cr-row {
+  display: flex;
+  align-items: center;
+  justify-items: space-between;
+}
