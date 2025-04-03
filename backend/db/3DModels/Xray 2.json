@@ -60,5 +60,12 @@
                 ]
             }
         }
-    ]
+    ],
+    "controlElements": [{
+        "name": "Joystick DeskMovement",
+        "element": "Joystick",
+        "props": {
+            "x": ""
+        }
+    }] 
 }

@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useThreeSetup } from "../hooks/useThreeSetup";
 import { useModelLoader } from "../hooks/useModelLoader";
 import useModelData from "../hooks/useModelData";
+import { ModelControlsInputs } from "./ModelControlsInputs";
 import { ModelControls } from "./ModelControls";
 
 interface ModelViewerProps {
@@ -53,11 +54,14 @@ const ModelViewer = ({
         </div>
       )}
       {modelLoaded && modelControlsEnable && modelControls?.models && (
-        <ModelControls
-          modelControls={modelControls}
-          positions={positions}
-          setPositions={setPositions}
-        />
+        <div className="flex">
+          <ModelControlsInputs
+            modelControls={modelControls}
+            positions={positions}
+            setPositions={setPositions}
+          />
+          <ModelControls />
+        </div>
       )}
     </div>
   );

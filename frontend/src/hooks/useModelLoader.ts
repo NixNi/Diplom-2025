@@ -22,7 +22,7 @@ export const useModelLoader = (
   modelData: ArrayBuffer | null,
   isLoading: boolean,
   isError: boolean,
-  modelControls?: modelControls | null // Изменённый тип
+  modelControls?: modelControls | null 
 ) => {
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
