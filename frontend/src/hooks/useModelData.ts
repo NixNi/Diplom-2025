@@ -5,7 +5,7 @@ interface xyzController {
   y?: [number, number];
   z?: [number, number];
 }
-interface modelControls {
+export interface modelControls {
   models: Array<{
     name: string;
     position?: xyzController;
@@ -22,14 +22,13 @@ const useModelData = (modelName: string, controls?: boolean) => {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Используем RTK Query для управления состоянием запроса
-
   useEffect(() => {
     const fetchModelData = async () => {
       try {
         setIsError(false);
         setErrorMessage(null);
-        if (modelName === "") throw new Error("Choose a model");
+        if (modelName === "" || modelName === "default")
+          throw new Error("Choose a model");
         const response = await fetch(
           `http://localhost:8046/api/models/${modelName}`
         );

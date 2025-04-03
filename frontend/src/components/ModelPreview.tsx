@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
-import setupLCC from "./additions/setupLCC";
+import setupLCC from "../additions/setupLCC";
 
 interface ModelPreview {
   model: ArrayBuffer;
