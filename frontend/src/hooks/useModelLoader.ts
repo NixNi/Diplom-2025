@@ -1,28 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import * as THREE from "three";
-import { modelControls } from "../hooks/useModelData"; // Предполагаемый тип
 
-interface xyz {
-  x?: number;
-  y?: number;
-  z?: number;
-}
-
-interface ModelPositions {
-  models: Array<{
-    name: string;
-    position?: xyz;
-    rotation?: xyz;
-  }>;
-}
+import { ModelControls, ModelPositions, xyz } from "../types/models";
 
 export const useModelLoader = (
   scene: THREE.Scene,
   modelData: ArrayBuffer | null,
   isLoading: boolean,
   isError: boolean,
-  modelControls?: modelControls | null 
+  modelControls?: ModelControls | null
 ) => {
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

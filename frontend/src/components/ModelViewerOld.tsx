@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
 import setupLCC from "../additions/setupLCC";
 import useModelData from "../hooks/useModelData";
+
+import { ModelPositions, xyz } from "../types/models";
 interface ModelViewer {
   modelName: string;
   size?: {
@@ -11,25 +13,13 @@ interface ModelViewer {
   };
   modelControlsEnable: boolean;
 }
-interface xyz {
-  x?: number;
-  y?: number;
-  z?: number;
-}
-interface modelPositions {
-  models: Array<{
-    name: string;
-    position?: xyz;
-    rotation?: xyz;
-  }>;
-}
 
 const ModelViewer = ({ modelName, size, modelControlsEnable }: ModelViewer) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef(new THREE.Scene());
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [positions, setPositions] = useState<modelPositions>({ models: [] });
+  const [positions, setPositions] = useState<ModelPositions>({ models: [] });
   const [modelLoaded, setModelLoaded] = useState(false);
   //TODO: ref for renderer and controls
 

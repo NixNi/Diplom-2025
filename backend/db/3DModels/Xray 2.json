@@ -1,71 +1,89 @@
 {
-    "models": [
-        {
-            "name": "Основание_Рентгена",
-            "position": {
-                "z": [
-                    -2.3,
-                    2.3
-                ]
-            }
-        },
-        {
-            "name": "Стол",
-            "position": {
-                "z": [
-                    -0.8,
-                    0.8
-                ]
-            }
-        },
-        {
-            "name": "Вертикальная_каретка",
-            "position": {
-                "y": [
-                    0.6,
-                    2.1
-                ]
-            }
-        },
-        {
-            "name": "Горизонтальная_ось_1",
-            "position": {
-                "x": [
-                    -1.9,
-                    -0.4
-                ]
-            },
-            "rotation": {
-                "x": [
-                    -10,
-                    10
-                ]
-            }
-        },
-        {
-            "name": "Горизонтальная_ось_2",
-            "rotation": {
-                "x": [
-                    -5,
-                    5
-                ]
-            }
-        },
-        {
-            "name": "Вертикальная_поверхность",
-            "position": {
-                "y": [
-                    3,
-                    4
-                ]
-            }
-        }
-    ],
-    "controlElements": [{
-        "name": "Joystick DeskMovement",
-        "element": "Joystick",
-        "props": {
-            "x": ""
-        }
-    }] 
+  "models": [
+    {
+      "name": "Основание_Рентгена",
+      "position": {
+        "z": [-2.3, 2.3]
+      }
+    },
+    {
+      "name": "Стол",
+      "position": {
+        "z": [-0.8, 0.8]
+      }
+    },
+    {
+      "name": "Вертикальная_каретка",
+      "position": {
+        "y": [0.6, 2.1]
+      }
+    },
+    {
+      "name": "Горизонтальная_ось_1",
+      "position": {
+        "x": [-1.9, -0.4]
+      },
+      "rotation": {
+        "x": [-10, 10]
+      }
+    },
+    {
+      "name": "Горизонтальная_ось_2",
+      "rotation": {
+        "x": [-5, 5]
+      }
+    },
+    {
+      "name": "Вертикальная_поверхность",
+      "position": {
+        "y": [3, 4]
+      }
+    }
+  ],
+  "controlElements": [
+    {
+      "name": "DeskMovement",
+      "element": "Joystick",
+      "props": {
+        "x": "Стол",
+        "xpath": ["position", "z"],
+        "y": "Вертикальная_каретка",
+        "ypath": ["position", "y"]
+      }
+    },
+    {
+      "name": "VerticalDeskMovement",
+      "element": "Joystick",
+      "props": {
+        "x": "Основание_Рентгена",
+        "xpath": ["position", "z"],
+        "y": "Вертикальная_поверхность",
+        "ypath": ["position", "y"]
+      }
+    },
+    {
+      "name": "Horizontal View",
+      "element": "Button",
+      "type": "set",
+      "props": {
+        "values": [
+          {
+            "element": "Основание_Рентгена",
+            "path": ["position", "z"],
+            "value": 0
+          },
+          {
+            "element": "Стол",
+            "path": ["position", "z"],
+            "value": 0
+          },
+          {
+            "element": "Вертикальная_каретка",
+            "path": ["position", "y"],
+            "value": 1.87
+          }
+        ]
+      }
+    }
+  ]
 }

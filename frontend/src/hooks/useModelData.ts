@@ -1,21 +1,9 @@
 import { useEffect, useState } from "react";
-
-interface xyzController {
-  x?: [number, number];
-  y?: [number, number];
-  z?: [number, number];
-}
-export interface modelControls {
-  models: Array<{
-    name: string;
-    position?: xyzController;
-    rotation?: xyzController;
-  }>;
-}
+import { ModelControls } from "../types/models";
 
 const useModelData = (modelName: string, controls?: boolean) => {
   const [modelData, setModelData] = useState<ArrayBuffer | null>(null);
-  const [modelControls, setModelControls] = useState<modelControls | null>(
+  const [modelControls, setModelControls] = useState<ModelControls | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);

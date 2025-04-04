@@ -1,21 +1,7 @@
-import { modelControls } from "../hooks/useModelData"; // Предполагаемый тип
-
-interface xyz {
-  x?: number;
-  y?: number;
-  z?: number;
-}
-
-interface ModelPositions {
-  models: Array<{
-    name: string;
-    position?: xyz;
-    rotation?: xyz;
-  }>;
-}
+import { ModelControls, ModelPositions } from "../types/models";
 
 interface ModelControlsProps {
-  modelControls: modelControls;
+  modelControls: ModelControls;
   positions: ModelPositions;
   setPositions: (positions: ModelPositions) => void;
 }

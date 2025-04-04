@@ -3,7 +3,7 @@ import { useThreeSetup } from "../hooks/useThreeSetup";
 import { useModelLoader } from "../hooks/useModelLoader";
 import useModelData from "../hooks/useModelData";
 import { ModelControlsInputs } from "./ModelControlsInputs";
-import { ModelControls } from "./ModelControls";
+import { ModelControlsComponent } from "./ModelControls";
 
 interface ModelViewerProps {
   modelName: string;
@@ -60,7 +60,11 @@ const ModelViewer = ({
             positions={positions}
             setPositions={setPositions}
           />
-          <ModelControls />
+          <ModelControlsComponent
+            modelControls={modelControls}
+            positions={positions}
+            setPositions={setPositions}
+          />
         </div>
       )}
     </div>
