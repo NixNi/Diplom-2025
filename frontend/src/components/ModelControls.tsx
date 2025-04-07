@@ -1,5 +1,6 @@
 import { ModelControls, ModelPositions } from "../types/models";
 import SControlJoystic from "./shared/SControlJoystick";
+import SSetButton from "./shared/SSetButton";
 interface ModelControlsProps {
   modelControls: ModelControls;
   positions: ModelPositions;
@@ -27,6 +28,19 @@ export const ModelControlsComponent = ({
               />
             </div>
           );
+          if (it.element === "setButton")
+            return (
+              <div key={it.name} className="p-2">
+                <p>{it.name}</p>
+                <SSetButton
+                  key={it.name}
+                  positions={positions}
+                  setPositions={setPositions}
+                  modelControls={modelControls}
+                  element={it}
+                />
+              </div>
+            );
           return <div>Element Not Found</div>;
         })}
       {/* <Joystick

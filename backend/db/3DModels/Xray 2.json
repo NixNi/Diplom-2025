@@ -63,8 +63,7 @@
     },
     {
       "name": "Horizontal View",
-      "element": "Button",
-      "type": "set",
+      "element": "setButton",
       "props": {
         "values": [
           {
@@ -81,6 +80,16 @@
             "element": "Вертикальная_каретка",
             "path": ["position", "y"],
             "value": 1.87
+          },
+          {
+            "element": "Горизонтальная_ось_2",
+            "path": ["position", "x"],
+            "value": 0
+          },
+          {
+            "element": "Горизонтальная_ось_1",
+            "path": ["position", "x"],
+            "value": 1.5708
           }
         ]
       }

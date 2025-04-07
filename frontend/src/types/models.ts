@@ -1,3 +1,4 @@
+import { Joystick } from "react-joystick-component";
 export interface xyz {
   x?: number;
   y?: number;
@@ -17,14 +18,28 @@ export interface ModelPositions {
     rotation?: xyz;
   }>;
 }
-export interface ControlElement {
+export type modelValuePath = ["position" | "rotation", keyof xyz];
+export interface JoystickControlElement {
   name: string;
-  element: string;
+  element: "Joystick";
   props: {
     x: string;
     y: string;
-    xpath: ["position" | "rotation", keyof xyz];
-    ypath: ["position" | "rotation", keyof xyz];
+    xpath: modelValuePath;
+    ypath: modelValuePath;
+  };
+}
+export interface SetButtonControlElement {
+  name: string;
+  element: "setButton";
+  props: {
+    values: [
+      {
+        element: string;
+        path: modelValuePath;
+        value: number;
+      }
+    ];
   };
 }
 export interface ModelControls {
@@ -33,5 +48,5 @@ export interface ModelControls {
     position?: xyzController;
     rotation?: xyzController;
   }>;
-  controlElements: Array<ControlElement>;
+  controlElements: Array<JoystickControlElement|SetButtonControlElement>;
 }

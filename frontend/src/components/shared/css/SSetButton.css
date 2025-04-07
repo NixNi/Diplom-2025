@@ -1,0 +1,10 @@
+.setButton {
+  background-color: #5863f8;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid #3c44ab;
+}
+.setButton:hover {
+  background-color: #3c44ab;
+}

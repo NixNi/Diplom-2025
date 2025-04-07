@@ -1,6 +1,6 @@
 import { Joystick } from "react-joystick-component";
 import {
-  ControlElement,
+  JoystickControlElement,
   ModelPositions,
   ModelControls,
 } from "../../types/models";
@@ -8,7 +8,7 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import { useState, useEffect } from "react";
 
 export interface SControlJoystic {
-  element: ControlElement;
+  element: JoystickControlElement;
   modelControls: ModelControls;
   positions: ModelPositions;
   setPositions: (positions: ModelPositions) => void;
