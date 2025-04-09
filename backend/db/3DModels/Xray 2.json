@@ -83,13 +83,61 @@
           },
           {
             "element": "Горизонтальная_ось_2",
-            "path": ["position", "x"],
+            "path": ["rotation", "x"],
             "value": 0
           },
           {
             "element": "Горизонтальная_ось_1",
-            "path": ["position", "x"],
+            "path": ["rotation", "x"],
             "value": 1.5708
+          },
+          {
+            "element": "Горизонтальная_ось_1",
+            "path": ["position", "x"],
+            "value": -0.63
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vertical View",
+      "element": "setButton",
+      "props": {
+        "values": [
+          {
+            "element": "Основание_Рентгена",
+            "path": ["position", "z"],
+            "value": 0
+          },
+          {
+            "element": "Стол",
+            "path": ["position", "z"],
+            "value": 0
+          },
+          {
+            "element": "Вертикальная_каретка",
+            "path": ["position", "y"],
+            "value": 0.8
+          },
+          {
+            "element": "Горизонтальная_ось_2",
+            "path": ["rotation", "x"],
+            "value": 0
+          },
+          {
+            "element": "Горизонтальная_ось_1",
+            "path": ["rotation", "x"],
+            "value": 3.1459
+          },
+          {
+            "element": "Горизонтальная_ось_1",
+            "path": ["position", "x"],
+            "value": -1.2
+          },
+          {
+            "element": "Вертикальная_поверхность",
+            "path": ["position", "y"],
+            "value": 3.9
           }
         ]
       }

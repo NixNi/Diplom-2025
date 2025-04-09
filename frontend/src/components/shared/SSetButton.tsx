@@ -18,8 +18,8 @@ export default function SSetButton({
   element,
   positions,
   setPositions,
-  modelControls,
-}: SSetButton) {
+}: // modelControls,
+SSetButton) {
   const step = 0.1;
   const [clicked, setClicked] = useState(false);
 
@@ -40,9 +40,21 @@ export default function SSetButton({
             if (currentValue !== undefined && currentValue !== it.value) {
               ended = false;
 
-              if (currentValue > it.value) 
-                elementPosition[it.path[0]][it.path[1]] = (currentValue - step)
-                setPositions({ models: [...filteredModels, elementPosition] });
+              if (currentValue > it.value) {
+                //@ts-ignore
+                elementPosition[it.path[0]][it.path[1]] = Math.max(
+                  currentValue - step,
+                  it.value
+                );
+              }
+              if (currentValue < it.value) {
+                //@ts-ignore
+                elementPosition[it.path[0]][it.path[1]] = Math.min(
+                  currentValue + step,
+                  it.value
+                );
+              }
+              setPositions({ models: [...filteredModels, elementPosition] });
             }
           }
         });
