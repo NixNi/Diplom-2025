@@ -10,6 +10,7 @@ export const ModelControlsInputs = ({
   modelControls,
   positions,
   setPositions,
+  
 }: ModelControlsProps) => {
   return (
     <div>

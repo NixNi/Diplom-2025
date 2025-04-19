@@ -1,4 +1,5 @@
-import { ModelControls, ModelPositions } from "../types/models";
+import { controlElement, ModelControls, ModelPositions } from "../types/models";
+import { useState } from "react";
 import SControlJoystic from "./shared/SControlJoystick";
 import SSetButton from "./shared/SSetButton";
 interface ModelControlsProps {
@@ -12,43 +13,37 @@ export const ModelControlsComponent = ({
   positions,
   setPositions,
 }: ModelControlsProps) => {
+  const [controlsEnabled, setControlsEnabled] = useState(true);
+  const controlsBundle = {
+    positions,
+    setPositions,
+    modelControls,
+    controlsEnabled,
+    setControlsEnabled,
+  };
+
+  function chooseElement(el: controlElement) {
+    if (!(["Joystick", "setButton"].includes(el.element)))
+      return <div>Element Not Found</div>;
+    return (
+      <div key={el.name} className="p-2">
+        <p>{el.name}</p>
+        {el.element === "Joystick" && (
+          <SControlJoystic {...controlsBundle} key={el.name} element={el} />
+        )}
+        {el.element === "setButton" && (
+          <SSetButton {...controlsBundle} key={el.name} element={el} />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="flex">
       {modelControls.controlElements &&
         modelControls.controlElements.map((it) => {
-          if (it.element === "Joystick") return (
-            <div key={it.name} className="p-2">
-              <p>{it.name}</p>
-              <SControlJoystic
-                key={it.name}
-                positions={positions}
-                setPositions={setPositions}
-                modelControls={modelControls}
-                element={it}
-              />
-            </div>
-          );
-          if (it.element === "setButton")
-            return (
-              <div key={it.name} className="p-2">
-                <p>{it.name}</p>
-                <SSetButton
-                  key={it.name}
-                  positions={positions}
-                  setPositions={setPositions}
-                  modelControls={modelControls}
-                  element={it}
-                />
-              </div>
-            );
-          return <div>Element Not Found</div>;
+          return chooseElement(it);
         })}
-      {/* <Joystick
-        start={(e) => console.log(e)}
-        throttle={500}
-        move={(e) => console.log(e)}
-        stop={(e) => console.log(e)}
-      /> */}
     </div>
   );
 };

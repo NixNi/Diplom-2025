@@ -1,4 +1,3 @@
-import { Joystick } from "react-joystick-component";
 export interface xyz {
   x?: number;
   y?: number;
@@ -42,11 +41,14 @@ export interface SetButtonControlElement {
     ];
   };
 }
+
+export type controlElement = JoystickControlElement | SetButtonControlElement;
 export interface ModelControls {
   models: Array<{
     name: string;
     position?: xyzController;
     rotation?: xyzController;
   }>;
-  controlElements: Array<JoystickControlElement|SetButtonControlElement>;
+  controlElements: Array<controlElement>;
 }
+

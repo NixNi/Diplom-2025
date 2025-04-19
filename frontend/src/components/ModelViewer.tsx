@@ -1,37 +1,37 @@
 import { useRef } from "react";
 import { useThreeSetup } from "../hooks/useThreeSetup";
 import { useModelLoader } from "../hooks/useModelLoader";
-import useModelData from "../hooks/useModelData";
+// import useModelData from "../hooks/useModelData";
 import { ModelControlsInputs } from "./ModelControlsInputs";
 import { ModelControlsComponent } from "./ModelControls";
+import { useAppSelector } from "../hooks/redux";
+// import { modelData } from "../store/model/model.slice";
+// import { useActions } from "../hooks/actions";
 
 interface ModelViewerProps {
-  modelName: string;
+  // modelName: string;
   size?: { x: number; y: number };
   modelControlsEnable: boolean;
+  modelData: ArrayBuffer | null;
 }
 
 const ModelViewer = ({
-  modelName,
+  modelData,
   size,
   modelControlsEnable,
 }: ModelViewerProps) => {
+  const model = useAppSelector(state => state.model);
+  
   const mountRef = useRef<HTMLDivElement>(null);
   const { scene } = useThreeSetup(mountRef, size);
-  const {
-    modelData,
-    modelControls,
-    isLoading,
-    isError,
-    errorMessage: loaderError,
-  } = useModelData(modelName, modelControlsEnable);
   const { errorMessage, modelLoaded, positions, setPositions } = useModelLoader(
     scene,
     modelData,
-    isLoading,
-    isError,
-    modelControls
+    model.isLoadingData || model.isLoadingControls,
+    model.isErrorData || model.isErrorControls,
+    model.modelControls
   );
+  const loaderError = model.errorMessage;
 
   // Внутри ModelViewer
   return (
@@ -53,15 +53,15 @@ const ModelViewer = ({
           </div>
         </div>
       )}
-      {modelLoaded && modelControlsEnable && modelControls?.models && (
+      {modelLoaded && modelControlsEnable && model.modelControls?.models && (
         <div className="flex">
           <ModelControlsInputs
-            modelControls={modelControls}
+            modelControls={model.modelControls}
             positions={positions}
             setPositions={setPositions}
           />
           <ModelControlsComponent
-            modelControls={modelControls}
+            modelControls={model.modelControls}
             positions={positions}
             setPositions={setPositions}
           />

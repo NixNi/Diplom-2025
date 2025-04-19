@@ -11,6 +11,8 @@ export interface SControlJoystic {
   element: JoystickControlElement;
   modelControls: ModelControls;
   positions: ModelPositions;
+  controlsEnabled: boolean;
+  setControlsEnabled: (e: boolean) => void;
   setPositions: (positions: ModelPositions) => void;
 }
 
@@ -19,6 +21,7 @@ export default function SControlJoystic({
   positions,
   setPositions,
   modelControls,
+  controlsEnabled,
 }: SControlJoystic) {
   const [joystickState, setJoystickState] =
     useState<IJoystickUpdateEvent | null>(null);
@@ -107,6 +110,7 @@ export default function SControlJoystic({
         move={(e) => setJoystickState(e)}
         start={(e) => setJoystickState(e)}
         stop={() => setJoystickState(null)}
+        disabled={!controlsEnabled}
       />
     </div>
   );

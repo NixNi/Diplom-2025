@@ -3,13 +3,18 @@ import SLSelect from "../components/shared/SLSelect";
 
 import { useEffect, useState } from "react";
 import { useGetAllModelNamesQuery } from "../store/model/model.api";
+import { useActions } from "../hooks/actions";
+import { useAppDispatch } from "../store";
+import { updateModelDataAsync } from "../store/model/model.slice";
 
 export default function Viewer() {
-  const [modelName, setModelName] = useState("");
   const [modelOptions, setModelOptions] = useState<
     Array<{ value: string; name: string; disable?: boolean }>
   >([]);
+  const [modelData, setModelData] = useState<ArrayBuffer | null>(null);
   const { data, isLoading, isError } = useGetAllModelNamesQuery();
+  const actions = useActions();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isLoading || isError) return;
@@ -21,11 +26,20 @@ export default function Viewer() {
 
   return (
     <div>
-      <ModelViewer modelName={modelName} modelControlsEnable />
+      <ModelViewer modelData={modelData} modelControlsEnable />
       {!isLoading && (
         <SLSelect
           name="modelName"
-          onChange={(e) => setModelName(e.target.value)}
+          onChange={async (e) => {
+            actions.setModelName(e.target.value);
+            actions.updateModelControlsAsync();
+            try {
+              const result = await dispatch(updateModelDataAsync()).unwrap();
+              setModelData(result); // Сохраняем modelData в локальном состоянии
+            } catch (error) {
+              console.error("Failed to load model data:", error);
+            }
+          }}
           text="Выберите модель"
           options={modelOptions}
         />

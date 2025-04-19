@@ -12,12 +12,16 @@ export interface SSetButton {
   modelControls: ModelControls;
   positions: ModelPositions;
   setPositions: (positions: ModelPositions) => void;
+  controlsEnabled: boolean;
+  setControlsEnabled: (e: boolean) => void;
 }
 
 export default function SSetButton({
   element,
   positions,
   setPositions,
+  controlsEnabled,
+  setControlsEnabled,
 }: // modelControls,
 SSetButton) {
   const step = 0.1;
@@ -26,6 +30,7 @@ SSetButton) {
   useEffect(() => {
     let intervalId: number;
     if (clicked) {
+      setControlsEnabled(false);
       intervalId = setInterval(() => {
         let ended = true;
         element.props.values.forEach((it) => {
@@ -58,7 +63,10 @@ SSetButton) {
             }
           }
         });
-        if (ended) setClicked(false);
+        if (ended) {
+          setControlsEnabled(true);
+          setClicked(false);
+        }
       }, 100);
     }
 
@@ -75,7 +83,7 @@ SSetButton) {
       <div
         className="setButton"
         onClick={() => {
-          setClicked(true);
+          if (controlsEnabled) setClicked(true);
         }}
       >
         {element.name}
