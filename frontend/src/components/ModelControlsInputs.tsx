@@ -1,15 +1,15 @@
 import { useActions } from "../hooks/actions";
+import { useGetModelPositions } from "../hooks/model";
 import { useAppSelector } from "../hooks/redux";
 
 export const ModelControlsInputs = () => {
   const actions = useActions();
   const model = useAppSelector((state) => state.model);
-  const positions = model.positions;
   const modelControls = model.modelControls;
   return (
     <div>
       {modelControls.models.map((it) => {
-        const part = positions.models.find((fit) => fit.name === it.name) || {
+        const part = useGetModelPositions(it.name)|| {
           name: it.name,
         };
 

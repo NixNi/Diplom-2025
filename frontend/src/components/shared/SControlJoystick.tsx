@@ -4,6 +4,7 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import { useState, useEffect } from "react";
 import { useActions } from "../../hooks/actions";
 import { useAppSelector } from "../../hooks/redux";
+import { useGetModelControls, useGetModelPositions } from "../../hooks/model";
 export interface SControlJoystic {
   element: JoystickControlElement;
   controlsEnabled: boolean;
@@ -17,17 +18,16 @@ export default function SControlJoystic({
   const actions = useActions();
   const model = useAppSelector((state) => state.model);
   const pos = model.positions;
-  const mCon = model.modelControls;
 
   const [joystickState, setJoystickState] =
     useState<IJoystickUpdateEvent | null>(null);
   const step = 0.1;
   const xname = element.props.x;
   const yname = element.props.y;
-  const xpart = pos.models.find((i) => i.name === xname) || { name: xname };
-  const ypart = pos.models.find((i) => i.name === yname) || { name: yname };
-  const xControl = mCon.models.find((i) => i.name === xname) || { name: xname };
-  const yControl = mCon.models.find((i) => i.name === yname) || { name: yname };
+  const xpart = useGetModelPositions(xname) || { name: xname };
+  const ypart = useGetModelPositions(yname) || { name: yname };
+  const xControl = useGetModelControls(xname) || { name: xname };
+  const yControl = useGetModelControls(yname) || { name: yname };
   const xLimits = xControl[element.props.xpath[0]]?.[
     element.props.xpath[1]
   ] || [-10, 10];
