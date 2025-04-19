@@ -1,26 +1,26 @@
-
 import { useAppSelector } from "./redux";
 import { useState, useRef, useEffect } from "react";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import * as THREE from "three";
 import { useAppDispatch } from "../store";
-import { ModelPositions, xyz } from "../types/models";
+import { xyz, ModelPositions } from "../types/models";
 import { updateModelDataAsync } from "../store/model/model.slice";
+import { useActions } from "./actions";
 
 export const useModelLoader = (scene: THREE.Scene) => {
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [modelData, setModelData] = useState<ArrayBuffer | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modelLoaded, setModelLoaded] = useState(false);
-  const [positions, setPositions] = useState<ModelPositions>({ models: [] });
+  // const [positions, setPositions] = useState<ModelPositions>({ models: [] });
   const dispatch = useAppDispatch();
-
+  const actions = useActions();
 
   const model = useAppSelector((state) => state.model);
   const isLoading = model.isLoadingData || model.isLoadingControls;
   const isError = model.isErrorData || model.isErrorControls;
   const modelControls = model.modelControls;
-
+  const positions = model.positions;
 
   useEffect(() => {
     async function modelLoad() {
@@ -53,6 +53,7 @@ export const useModelLoader = (scene: THREE.Scene) => {
         scene.add(gltf.scene);
         setModelLoaded(true);
 
+        const newPositions: ModelPositions = { models: [] };
         gltf.scene.traverse((child) => {
           if (child.type === "Mesh") {
             child.castShadow = true;
@@ -83,18 +84,15 @@ export const useModelLoader = (scene: THREE.Scene) => {
               });
             }
 
-            setPositions((prev) => ({
-              models: [
-                ...prev.models.filter((m) => m.name !== child.name),
-                {
-                  name: child.name,
-                  position: Object.keys(position).length ? position : undefined,
-                  rotation: Object.keys(rotation).length ? rotation : undefined,
-                },
-              ],
-            }));
+            newPositions.models.push({
+              name: child.name,
+              position: Object.keys(position).length ? position : undefined,
+              rotation: Object.keys(rotation).length ? rotation : undefined,
+            });
           }
         });
+
+        actions.updatePositionsLocal(newPositions);
       },
       (error) => {
         setErrorMessage("Error parsing model: " + error.message);
@@ -122,5 +120,5 @@ export const useModelLoader = (scene: THREE.Scene) => {
     }
   }, [positions, modelLoaded]);
 
-  return { modelRef, errorMessage, modelLoaded, positions, setPositions };
+  return { modelRef, errorMessage, modelLoaded };
 };

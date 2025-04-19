@@ -1,29 +1,30 @@
-import {
-  SetButtonControlElement,
-  ModelPositions,
-  ModelControls,
-} from "../../types/models";
+import { SetButtonControlElement } from "../../types/models";
+import { useActions } from "../../hooks/actions";
+import { useAppSelector } from "../../hooks/redux";
 import "./css/SSetButton.css";
 
 import { useState, useEffect } from "react";
 
 export interface SSetButton {
   element: SetButtonControlElement;
-  modelControls: ModelControls;
-  positions: ModelPositions;
-  setPositions: (positions: ModelPositions) => void;
+  // modelControls: ModelControls;
+  // positions: ModelPositions;
+  // setPositions: (positions: ModelPositions) => void;
   controlsEnabled: boolean;
   setControlsEnabled: (e: boolean) => void;
 }
 
 export default function SSetButton({
   element,
-  positions,
-  setPositions,
+  // positions,
+  // setPositions,
   controlsEnabled,
   setControlsEnabled,
 }: // modelControls,
 SSetButton) {
+  const actions = useActions();
+  const model = useAppSelector((state) => state.model);
+  const positions = model.positions;
   const step = 0.1;
   const [clicked, setClicked] = useState(false);
 
@@ -38,28 +39,26 @@ SSetButton) {
             (itv) => itv.name === it.element
           );
           if (elementPosition) {
-            const filteredModels = positions.models.filter(
-              (itv) => itv.name !== it.element
-            );
             const currentValue = elementPosition?.[it.path[0]]?.[it.path[1]];
             if (currentValue !== undefined && currentValue !== it.value) {
               ended = false;
-
+              const elem = { ...elementPosition };
+              elem[it.path[0]] = { ...elem[it.path[0]] };
               if (currentValue > it.value) {
                 //@ts-ignore
-                elementPosition[it.path[0]][it.path[1]] = Math.max(
+                elem[it.path[0]][it.path[1]] = Math.max(
                   currentValue - step,
                   it.value
                 );
               }
               if (currentValue < it.value) {
                 //@ts-ignore
-                elementPosition[it.path[0]][it.path[1]] = Math.min(
+                elem[it.path[0]][it.path[1]] = Math.min(
                   currentValue + step,
                   it.value
                 );
               }
-              setPositions({ models: [...filteredModels, elementPosition] });
+              actions.updateModelPositionLocal(elem);
             }
           }
         });
@@ -76,7 +75,7 @@ SSetButton) {
         clearInterval(intervalId);
       }
     };
-  }, [clicked]);
+  }, [clicked, positions]);
 
   return (
     <div className="m-2">

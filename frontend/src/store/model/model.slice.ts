@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ModelControls } from "../../types/models";
+import { ModelControls, ModelPositions, xyz } from "../../types/models";
 
 interface ModelState {
   id: number;
   name: string;
-  modelControls: ModelControls | null;
+  modelControls: ModelControls;
+  positions: ModelPositions;
   isLoadingControls: boolean;
   isErrorControls: boolean;
   isLoadingData: boolean;
@@ -15,7 +16,8 @@ interface ModelState {
 const initialState: ModelState = {
   id: 0,
   name: "default",
-  modelControls: null,
+  modelControls: { models: [], controlElements: [] },
+  positions: { models: [] },
   isLoadingControls: false,
   isErrorControls: false,
   isLoadingData: false,
@@ -86,11 +88,29 @@ export const modelSlice = createSlice({
       state.name = action.payload;
     },
     resetModelState: (state) => {
-      state.modelControls = null;
+      state.modelControls = { models: [], controlElements: [] };
+      state.positions = { models: [] };
       state.isLoadingControls = false;
       state.isErrorControls = false;
       state.errorMessage = null;
       state.name = "default";
+    },
+    updatePositionsLocal: (state, action: PayloadAction<ModelPositions>) => {
+      state.positions = action.payload;
+    },
+    updateModelPositionLocal: (
+      state,
+      action: PayloadAction<{
+        name: string;
+        position?: xyz;
+        rotation?: xyz;
+      }>
+    ) => {
+      const { name, position, rotation } = action.payload;
+      state.positions.models = [
+        ...state.positions.models.filter((m) => m.name !== name),
+        { name, position, rotation },
+      ];
     },
   },
   extraReducers: (builder) => {

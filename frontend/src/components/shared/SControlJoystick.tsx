@@ -1,76 +1,58 @@
 import { Joystick } from "react-joystick-component";
-import {
-  JoystickControlElement,
-  ModelPositions,
-  ModelControls,
-} from "../../types/models";
+import { JoystickControlElement } from "../../types/models";
 import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
 import { useState, useEffect } from "react";
-
+import { useActions } from "../../hooks/actions";
+import { useAppSelector } from "../../hooks/redux";
 export interface SControlJoystic {
   element: JoystickControlElement;
-  modelControls: ModelControls;
-  positions: ModelPositions;
   controlsEnabled: boolean;
   setControlsEnabled: (e: boolean) => void;
-  setPositions: (positions: ModelPositions) => void;
 }
 
 export default function SControlJoystic({
   element,
-  positions,
-  setPositions,
-  modelControls,
   controlsEnabled,
 }: SControlJoystic) {
+  const actions = useActions();
+  const model = useAppSelector((state) => state.model);
+  const pos = model.positions;
+  const mCon = model.modelControls;
+
   const [joystickState, setJoystickState] =
     useState<IJoystickUpdateEvent | null>(null);
   const step = 0.1;
   const xname = element.props.x;
   const yname = element.props.y;
-
-  const xpart = positions.models.find((fit) => fit.name === xname) || {
-    name: xname,
-  };
-  const xpartControl = modelControls.models.find(
-    (fit) => fit.name === xname
-  ) || {
-    name: xname,
-  };
-  const xfilteredModels = positions.models.filter((fit) => fit.name !== xname);
-  const xpartLimits = xpartControl[element.props.xpath[0]]?.[
+  const xpart = pos.models.find((i) => i.name === xname) || { name: xname };
+  const ypart = pos.models.find((i) => i.name === yname) || { name: yname };
+  const xControl = mCon.models.find((i) => i.name === xname) || { name: xname };
+  const yControl = mCon.models.find((i) => i.name === yname) || { name: yname };
+  const xLimits = xControl[element.props.xpath[0]]?.[
     element.props.xpath[1]
   ] || [-10, 10];
-  const ypart = positions.models.find((fit) => fit.name === yname) || {
-    name: yname,
-  };
-  const ypartControl = modelControls.models.find(
-    (fit) => fit.name === yname
-  ) || {
-    name: yname,
-  };
-  const yfilteredModels = positions.models.filter((fit) => fit.name !== yname);
-  const ypartLimits = ypartControl[element.props.ypath[0]]?.[
+  const yLimits = yControl[element.props.ypath[0]]?.[
     element.props.ypath[1]
   ] || [-10, 10];
 
   function setX(n: number) {
-    xpart[element.props.xpath[0]] = xpart[element.props.xpath[0]] || {};
+    const xpartd = { ...xpart };
+    xpartd[element.props.xpath[0]] = { ...xpartd[element.props.xpath[0]] };
     //@ts-ignore
-    xpart[element.props.xpath[0]][element.props.xpath[1]] = n;
-    setPositions({ models: [...xfilteredModels, xpart] });
+    xpartd[element.props.xpath[0]][element.props.xpath[1]] = n;
+    actions.updateModelPositionLocal(xpartd);
   }
 
   function setY(n: number) {
-    ypart[element.props.ypath[0]] = ypart[element.props.ypath[0]] || {};
+    const ypartd = { ...ypart };
+    ypartd[element.props.ypath[0]] = { ...ypartd[element.props.ypath[0]] };
     //@ts-ignore
-    ypart[element.props.ypath[0]][element.props.ypath[1]] = n;
-    setPositions({ models: [...yfilteredModels, ypart] });
+    ypartd[element.props.ypath[0]][element.props.ypath[1]] = n;
+    actions.updateModelPositionLocal(ypartd);
   }
 
   useEffect(() => {
     let intervalId: number;
-
     if (joystickState?.type === "move") {
       intervalId = setInterval(() => {
         const y = ypart[element.props.ypath[0]]?.[element.props.ypath[1]] || 0;
@@ -78,16 +60,16 @@ export default function SControlJoystic({
 
         switch (joystickState.direction) {
           case "FORWARD":
-            setY(Math.min(y + step, ypartLimits[1]));
+            setY(Math.min(y + step, yLimits[1]));
             break;
           case "BACKWARD":
-            setY(Math.max(y - step, ypartLimits[0]));
+            setY(Math.max(y - step, yLimits[0]));
             break;
           case "LEFT":
-            setX(Math.min(x + step, xpartLimits[1]));
+            setX(Math.min(x + step, xLimits[1]));
             break;
           case "RIGHT":
-            setX(Math.max(x - step, xpartLimits[0]));
+            setX(Math.max(x - step, xLimits[0]));
             break;
         }
       }, 100);
@@ -99,7 +81,7 @@ export default function SControlJoystic({
         clearInterval(intervalId);
       }
     };
-  }, [joystickState]);
+  }, [joystickState, pos]);
 
   return (
     <div className="m-2">

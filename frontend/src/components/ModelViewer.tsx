@@ -16,8 +16,7 @@ const ModelViewer = ({ size, modelControlsEnable }: ModelViewerProps) => {
 
   const mountRef = useRef<HTMLDivElement>(null);
   const { scene } = useThreeSetup(mountRef, size);
-  const { errorMessage, modelLoaded, positions, setPositions } =
-    useModelLoader(scene);
+  const { errorMessage, modelLoaded } = useModelLoader(scene);
   const loaderError = model.errorMessage;
 
   // Внутри ModelViewer
@@ -42,16 +41,8 @@ const ModelViewer = ({ size, modelControlsEnable }: ModelViewerProps) => {
       )}
       {modelLoaded && modelControlsEnable && model.modelControls?.models && (
         <div className="flex">
-          <ModelControlsInputs
-            modelControls={model.modelControls}
-            positions={positions}
-            setPositions={setPositions}
-          />
-          <ModelControlsComponent
-            modelControls={model.modelControls}
-            positions={positions}
-            setPositions={setPositions}
-          />
+          <ModelControlsInputs/>
+          <ModelControlsComponent/>
         </div>
       )}
     </div>

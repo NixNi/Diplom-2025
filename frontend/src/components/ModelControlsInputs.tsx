@@ -1,26 +1,17 @@
-import { ModelControls, ModelPositions } from "../types/models";
+import { useActions } from "../hooks/actions";
+import { useAppSelector } from "../hooks/redux";
 
-interface ModelControlsProps {
-  modelControls: ModelControls;
-  positions: ModelPositions;
-  setPositions: (positions: ModelPositions) => void;
-}
-
-export const ModelControlsInputs = ({
-  modelControls,
-  positions,
-  setPositions,
-  
-}: ModelControlsProps) => {
+export const ModelControlsInputs = () => {
+  const actions = useActions();
+  const model = useAppSelector((state) => state.model);
+  const positions = model.positions;
+  const modelControls = model.modelControls;
   return (
     <div>
       {modelControls.models.map((it) => {
         const part = positions.models.find((fit) => fit.name === it.name) || {
           name: it.name,
         };
-        const filteredModels = positions.models.filter(
-          (fit) => fit.name !== it.name
-        );
 
         return (
           <div key={it.name} className="border-1 border-white border-solid p-2">
@@ -44,9 +35,10 @@ export const ModelControlsInputs = ({
                         max={Number(it.position?.[axis]?.[1]) || 1000}
                         step={0.1}
                         onChange={(e) => {
-                          part.position = part.position || {};
-                          part.position[axis] = Number(e.target.value);
-                          setPositions({ models: [...filteredModels, part] });
+                          const partd = { ...part };
+                          partd.position = { ...partd.position };
+                          partd.position[axis] = Number(e.target.value);
+                          actions.updateModelPositionLocal(partd);
                         }}
                       />
                     </div>
@@ -71,9 +63,10 @@ export const ModelControlsInputs = ({
                         max={Number(it.rotation?.[axis]?.[1]) || 1000}
                         step={0.1}
                         onChange={(e) => {
-                          part.rotation = part.rotation || {};
-                          part.rotation[axis] = Number(e.target.value);
-                          setPositions({ models: [...filteredModels, part] });
+                          const partd = { ...part };
+                          partd.rotation = { ...partd.rotation };
+                          partd.rotation[axis] = Number(e.target.value);
+                          actions.updateModelPositionLocal(partd);
                         }}
                       />
                     </div>

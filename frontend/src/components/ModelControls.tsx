@@ -1,29 +1,19 @@
-import { controlElement, ModelControls, ModelPositions } from "../types/models";
+import { controlElement } from "../types/models";
+import { useAppSelector } from "../hooks/redux";
 import { useState } from "react";
 import SControlJoystic from "./shared/SControlJoystick";
 import SSetButton from "./shared/SSetButton";
-interface ModelControlsProps {
-  modelControls: ModelControls;
-  positions: ModelPositions;
-  setPositions: (positions: ModelPositions) => void;
-}
 
-export const ModelControlsComponent = ({
-  modelControls,
-  positions,
-  setPositions,
-}: ModelControlsProps) => {
+export const ModelControlsComponent = () => {
   const [controlsEnabled, setControlsEnabled] = useState(true);
+  const modelControls = useAppSelector((state) => state.model.modelControls);
   const controlsBundle = {
-    positions,
-    setPositions,
-    modelControls,
     controlsEnabled,
     setControlsEnabled,
   };
 
   function chooseElement(el: controlElement) {
-    if (!(["Joystick", "setButton"].includes(el.element)))
+    if (!["Joystick", "setButton"].includes(el.element))
       return <div>Element Not Found</div>;
     return (
       <div key={el.name} className="p-2">
