@@ -1,36 +1,23 @@
 import { useRef } from "react";
 import { useThreeSetup } from "../hooks/useThreeSetup";
 import { useModelLoader } from "../hooks/useModelLoader";
-// import useModelData from "../hooks/useModelData";
 import { ModelControlsInputs } from "./ModelControlsInputs";
 import { ModelControlsComponent } from "./ModelControls";
 import { useAppSelector } from "../hooks/redux";
-// import { modelData } from "../store/model/model.slice";
 // import { useActions } from "../hooks/actions";
 
 interface ModelViewerProps {
-  // modelName: string;
   size?: { x: number; y: number };
   modelControlsEnable: boolean;
-  modelData: ArrayBuffer | null;
 }
 
-const ModelViewer = ({
-  modelData,
-  size,
-  modelControlsEnable,
-}: ModelViewerProps) => {
-  const model = useAppSelector(state => state.model);
-  
+const ModelViewer = ({ size, modelControlsEnable }: ModelViewerProps) => {
+  const model = useAppSelector((state) => state.model);
+
   const mountRef = useRef<HTMLDivElement>(null);
   const { scene } = useThreeSetup(mountRef, size);
-  const { errorMessage, modelLoaded, positions, setPositions } = useModelLoader(
-    scene,
-    modelData,
-    model.isLoadingData || model.isLoadingControls,
-    model.isErrorData || model.isErrorControls,
-    model.modelControls
-  );
+  const { errorMessage, modelLoaded, positions, setPositions } =
+    useModelLoader(scene);
   const loaderError = model.errorMessage;
 
   // Внутри ModelViewer

@@ -1,23 +1,42 @@
+
+import { useAppSelector } from "./redux";
 import { useState, useRef, useEffect } from "react";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import * as THREE from "three";
+import { useAppDispatch } from "../store";
+import { ModelPositions, xyz } from "../types/models";
+import { updateModelDataAsync } from "../store/model/model.slice";
 
-import { ModelControls, ModelPositions, xyz } from "../types/models";
-
-export const useModelLoader = (
-  scene: THREE.Scene,
-  modelData: ArrayBuffer | null,
-  isLoading: boolean,
-  isError: boolean,
-  modelControls?: ModelControls | null
-) => {
+export const useModelLoader = (scene: THREE.Scene) => {
   const modelRef = useRef<THREE.Object3D | null>(null);
+  const [modelData, setModelData] = useState<ArrayBuffer | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modelLoaded, setModelLoaded] = useState(false);
   const [positions, setPositions] = useState<ModelPositions>({ models: [] });
+  const dispatch = useAppDispatch();
+
+
+  const model = useAppSelector((state) => state.model);
+  const isLoading = model.isLoadingData || model.isLoadingControls;
+  const isError = model.isErrorData || model.isErrorControls;
+  const modelControls = model.modelControls;
+
+
+  useEffect(() => {
+    async function modelLoad() {
+      try {
+        const result = await dispatch(updateModelDataAsync()).unwrap();
+        setModelData(result); // Сохраняем modelData в локальном состоянии
+      } catch (error) {
+        console.error("Failed to load model data:", error);
+      }
+    }
+    modelLoad();
+  }, [model.name]);
 
   useEffect(() => {
     setModelLoaded(false);
+    console.log("i worked 2");
     if (!modelData || isLoading || isError) return;
 
     const loader = new GLTFLoader();
@@ -81,7 +100,7 @@ export const useModelLoader = (
         setErrorMessage("Error parsing model: " + error.message);
       }
     );
-  }, [modelData, isLoading, isError, scene, modelControls]);
+  }, [modelData, scene, modelControls]);
 
   useEffect(() => {
     if (modelLoaded && modelRef.current) {
