@@ -1,7 +1,11 @@
 :root {
   --background: #171d1c;
+  --light-background: color(
+    from var(--background) xyz calc(x * 2.1) calc(y * 2.1) calc(z * 2.1)
+  );
   --text: #efe9f4;
-  --secondary: #5863f8;
+  --secondary: rgb(82, 50, 163); 
+  /* --secondary: #5863f8; */
   --secondary-dark: color(
     from var(--secondary) xyz calc(x * 0.21) calc(y * 0.21) calc(z * 0.21)
   );

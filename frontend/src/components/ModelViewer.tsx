@@ -4,6 +4,8 @@ import { useModelLoader } from "../hooks/useModelLoader";
 import { ModelControlsInputs } from "./ModelControlsInputs";
 import { ModelControlsComponent } from "./ModelControls";
 import { useAppSelector } from "../hooks/redux";
+import STabViewer from "./shared/STabViewer";
+import STab from "./shared/STab";
 
 interface ModelViewerProps {
   size?: { x: number; y: number };
@@ -49,10 +51,14 @@ const ModelViewer = ({
         {children}
       </div>
       {modelLoaded && modelControlsEnable && model.modelControls?.models && (
-        <>
-          <ModelControlsInputs />
-          <ModelControlsComponent />
-        </>
+        <STabViewer>
+          <STab title="Интерфейс" default>
+            <ModelControlsComponent />
+          </STab>
+          <STab title="Ручной ввод">
+            <ModelControlsInputs />
+          </STab>
+        </STabViewer>
       )}
     </div>
   );

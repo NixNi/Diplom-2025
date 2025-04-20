@@ -7,19 +7,19 @@ export const ModelControlsInputs = () => {
   const model = useAppSelector((state) => state.model);
   const modelControls = model.modelControls;
   return (
-    <div>
+    <div className="flex flex-wrap">
       {modelControls.models.map((it) => {
-        const part = useGetModelPositions(it.name)|| {
+        const part = useGetModelPositions(it.name) || {
           name: it.name,
         };
 
         return (
-          <div key={it.name} className="border-1 border-white border-solid p-2">
-            <p>{it.name}</p>
+          <div key={it.name} className="p-2 m-2 border-light-background">
+            <p>{it.name.replace(/_/g, " ")}</p>
             <div className="flex gap-3">
               {it.position && (
                 <div>
-                  <p>Position</p>
+                  <p>Позиция</p>
                   {(
                     Object.keys(it.position) as Array<keyof typeof it.position>
                   ).map((axis) => (
@@ -47,7 +47,7 @@ export const ModelControlsInputs = () => {
               )}
               {it.rotation && (
                 <div>
-                  <p>Rotation</p>
+                  <p>Поворот</p>
                   {(
                     Object.keys(it.rotation) as Array<keyof typeof it.rotation>
                   ).map((axis) => (

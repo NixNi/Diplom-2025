@@ -40,6 +40,10 @@ svg {
   background-color: var(--warning-hover);
 }
 
+.border-light-background {
+  border: 1px solid var(--light-background);
+}
+
 .filler {
   background-color: var(--filler);
 }

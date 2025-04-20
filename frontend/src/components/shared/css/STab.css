@@ -1,0 +1,23 @@
+.tabs-viewer {
+  flex-grow: 1;
+}
+.tabs-container {
+  border: 1px var(--light-background) solid;
+  flex-grow: 1;
+}
+.tabs-titles-container {
+  background-color: var(--light-background);
+}
+.tab-title {
+  padding: 6px;
+  margin-bottom: -1px;
+  border-bottom: 1px white solid;
+  opacity: 1;
+  
+}
+.tab-title.active {
+  background-color: var(--background);
+  border: 1px var(--light-background) solid;
+  opacity: 1;
+  border-bottom: none;
+}
