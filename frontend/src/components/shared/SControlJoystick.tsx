@@ -4,14 +4,16 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import { useState, useEffect } from "react";
 import { useActions } from "../../hooks/actions";
 import { useAppSelector } from "../../hooks/redux";
-import { useGetCanControl, useGetModelControls, useGetModelPositions } from "../../hooks/model";
+import {
+  useGetCanControl,
+  useGetModelControls,
+  useGetModelPositions,
+} from "../../hooks/model";
 export interface SControlJoystic {
   element: JoystickControlElement;
 }
 
-export default function SControlJoystic({
-  element
-}: SControlJoystic) {
+export default function SControlJoystic({ element }: SControlJoystic) {
   const actions = useActions();
   const model = useAppSelector((state) => state.model);
   const pos = model.positions;
@@ -84,8 +86,8 @@ export default function SControlJoystic({
     <div className="m-2">
       <Joystick
         throttle={100}
-        stickColor="#5863f8"
-        baseColor="#2a2f77"
+        stickColor="var(--secondary)"
+        baseColor="var(--secondary-dark)"
         move={(e) => setJoystickState(e)}
         start={(e) => setJoystickState(e)}
         stop={() => setJoystickState(null)}

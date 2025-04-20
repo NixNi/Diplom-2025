@@ -41,8 +41,42 @@ export interface SetButtonControlElement {
     ];
   };
 }
+export interface SArrowButtonsElement {
+  name: string;
+  element: "ArrowButtons";
+  props: {
+    type: "up/down" | "left/right";
+    element: string;
+    path: modelValuePath;
+  };
+}
 
-export type controlElement = JoystickControlElement | SetButtonControlElement;
+export interface SPowerButtonElement {
+  name: string;
+  element: "PowerButton";
+  props: {
+    defaultValues: [
+      {
+        element: string;
+        path: modelValuePath;
+        value: number;
+      }
+    ];
+  };
+}
+
+export interface SEmergencyStopElement {
+  name: string;
+  element: "EmergencyStop";
+}
+
+export type controlElement =
+  | JoystickControlElement
+  | SetButtonControlElement
+  | SArrowButtonsElement
+  | SPowerButtonElement
+  | SEmergencyStopElement;
+  
 export interface ModelControls {
   models: Array<{
     name: string;
@@ -51,4 +85,3 @@ export interface ModelControls {
   }>;
   controlElements: Array<controlElement>;
 }
-

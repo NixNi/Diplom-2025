@@ -1,3 +1,5 @@
+@import url("./colors.css");
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,23 +7,41 @@
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 body {
-  background-color: #171d1c;
-  color: #efe9f4;
+  background-color: var(--background);
+  color: var(--text);
 }
-
+svg {
+  display: block;
+  fill: var(--text);
+}
 .secondary {
-  background-color: #5863f8;
-  color: #efe9f4;
+  background-color: var(--secondary);
+  color: var(--text);
 }
 .secondary-hover {
-  background-color: #5863f8;
-  color: #efe9f4;
+  border: 1px solid var(--secondary-hover);
+  background-color: var(--secondary);
+  color: var(--text);
 }
 .secondary-hover:hover {
-  background-color: #4f56bc;
+  background-color: var(--secondary-hover);
 }
+
+.warning {
+  background-color: var(--warning);
+  color: var(--text);
+}
+.warning-hover {
+  border: 1px solid var(--warning-hover);
+  background-color: var(--warning);
+  color: var(--text);
+}
+.warning-hover:hover {
+  background-color: var(--warning-hover);
+}
+
 .filler {
-  background-color: #3f3f3f;
+  background-color: var(--filler);
 }
 
 .scrollable-container {

@@ -1,30 +1,28 @@
-import { SetButtonControlElement } from "../../types/models";
 import { useActions } from "../../hooks/actions";
 import { useAppSelector } from "../../hooks/redux";
-import "./css/SSetButton.css";
-
 import { useState, useEffect } from "react";
-import { useGetCanControl } from "../../hooks/model";
+import PowerIcon from "../../icons/svg/power.svg?react";
+import { SPowerButtonElement } from "../../types/models";
+import "./css/SCircleButton.css";
 
-export interface SSetButton {
-  element: SetButtonControlElement;
+export interface SPowerButton {
+  element: SPowerButtonElement;
 }
 
-export default function SSetButton({ element }: SSetButton) {
+export default function SPowerButton({ element }: SPowerButton) {
   const actions = useActions();
   const model = useAppSelector((state) => state.model);
-  const enabled = useGetCanControl();
   const positions = model.positions;
   const step = 0.1;
   const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
     let intervalId: number;
-    if (clicked) {
+    if (clicked && model.isEnabled && !model.isEmergencyStoped) {
       actions.setControlsEnabled(false);
       intervalId = setInterval(() => {
         let ended = true;
-        element.props.values.forEach((it) => {
+        element.props.defaultValues.forEach((it) => {
           const elementPosition = positions.models.find(
             (itv) => itv.name === it.element
           );
@@ -48,20 +46,19 @@ export default function SSetButton({ element }: SSetButton) {
                   it.value
                 );
               }
-              if (!model.isEmergencyStoped) {
-                actions.updateModelPositionLocal(elem);
-              } else {
-                clearInterval(intervalId);
-                setClicked(false);
-              }
+              actions.updateModelPositionLocal(elem);
             }
           }
         });
         if (ended) {
+          actions.switchEanbled();
           actions.setControlsEnabled(true);
           setClicked(false);
         }
       }, 100);
+    } else if (clicked) {
+      actions.switchEanbled();
+      setClicked(false);
     }
 
     // Очистка интервала при изменении состояния или размонтировании
@@ -73,15 +70,13 @@ export default function SSetButton({ element }: SSetButton) {
   }, [clicked, positions]);
 
   return (
-    <div className="m-2">
-      <div
-        className="setButton"
-        onClick={() => {
-          if (enabled) setClicked(true);
-        }}
-      >
-        {element.name}
-      </div>
+    <div
+      className="circle-button secondary secondary-hover"
+      onClick={() => {
+        setClicked(true);
+      }}
+    >
+      <PowerIcon className="circle-button_icon" />
     </div>
   );
 }

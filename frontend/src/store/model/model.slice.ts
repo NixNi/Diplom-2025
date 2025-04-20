@@ -103,6 +103,9 @@ export const modelSlice = createSlice({
     setControlsEnabled: (state, action: PayloadAction<boolean>) => {
       state.isControlsEnabled = action.payload;
     },
+    setEmergency: (state) => {
+      state.isEmergencyStoped = true;
+    },
     resetModelState: (state) => {
       state.modelControls = { models: [], controlElements: [] };
       state.positions = { models: [] };

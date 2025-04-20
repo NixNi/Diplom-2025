@@ -1,0 +1,20 @@
+:root {
+  --background: #171d1c;
+  --text: #efe9f4;
+  --secondary: #5863f8;
+  --secondary-dark: color(
+    from var(--secondary) xyz calc(x * 0.21) calc(y * 0.21) calc(z * 0.21)
+  );
+  --secondary-hover-light: color(
+    from var(--secondary) xyz calc(x * 0.8) calc(y * 0.8) calc(z * 0.8)
+  );
+  --secondary-hover: color(
+    from var(--secondary) xyz calc(x * 0.45) calc(y * 0.45) calc(z * 0.45)
+  );
+  --warning: #f88b58;
+  --warning-hover: color(
+    from var(--warning) xyz calc(x * 0.45) calc(y * 0.45) calc(z * 0.45)
+  );
+  --filler: #3f3f3f;
+  --transparent: transparent;
+}

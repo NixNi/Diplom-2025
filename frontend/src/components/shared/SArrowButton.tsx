@@ -1,24 +1,28 @@
 import "./css/SArrowButton.css";
+import { HTMLAttributes } from "react";
 
-export interface SArrowButton {
+export interface SArrowButton extends HTMLAttributes<HTMLDivElement> {
   left?: boolean;
   right?: boolean;
   up?: boolean;
   down?: boolean;
-  onClick?: () => {};
-  className?: string;
 }
 
-export default function SArrowButton(props: SArrowButton) {
+export default function SArrowButton({
+  left,
+  right,
+  up,
+  down,
+  className,
+  ...restProps
+}: SArrowButton) {
   let cls = "";
-  cls = props.left ? "arr-btn-left" : cls;
-  cls = props.right ? "arr-btn-right" : cls;
-  cls = props.up ? "arr-btn-up" : cls;
-  cls = props.down ? "arr-btn-down" : cls;
+  cls = left ? "arr-btn-left" : cls;
+  cls = right ? "arr-btn-right" : cls;
+  cls = up ? "arr-btn-up" : cls;
+  cls = down ? "arr-btn-down" : cls;
+
   return (
-    <div
-      className={`arr-btn ${cls} ${props.className}`}
-      onClick={props.onClick}
-    ></div>
+    <div {...restProps} className={`arr-btn ${cls} ${className || ""}`}></div>
   );
 }

@@ -1,12 +1,12 @@
 .setButton {
-  background-color: #5863f8;
+  background-color: var(--secondary);
   padding: 10px;
   border-radius: 10px;
   text-align: center;
-  border: 1px solid #3c44ab;
+  border: 1px solid var(--secondary-hover);
   cursor: pointer;
   user-select: none;
 }
 .setButton:hover {
-  background-color: #3c44ab;
+  background-color: var(--secondary-hover);
 }

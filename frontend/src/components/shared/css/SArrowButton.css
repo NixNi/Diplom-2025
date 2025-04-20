@@ -4,46 +4,41 @@
 }
 
 .arr-btn-down {
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 20px solid rgb(223, 223, 223);
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-top: 35px solid var(--secondary);
 }
 
 .arr-btn-down:hover {
-  border-top: 20px solid rgb(164, 164, 164);
+  border-top: 35px solid var(--secondary-hover);
 }
 
 .arr-btn-up {
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 20px solid rgb(223, 223, 223);
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 35px solid var(--secondary);
 }
 
 .arr-btn-up:hover {
-  border-bottom: 20px solid rgb(164, 164, 164);
+  border-bottom: 35px solid var(--secondary-hover);
 }
-
-
-
-.arr-btn-right {
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-right: 20px solid rgb(223, 223, 223);
-}
-
-.arr-btn-right:hover {
-  border-right: 20px solid rgb(164, 164, 164);
-}
-
-
 
 .arr-btn-left {
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  border-left: 20px solid rgb(223, 223, 223);
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  border-right: 35px solid var(--secondary);
 }
 
 .arr-btn-left:hover {
-  border-left: 20px solid rgb(164, 164, 164);
+  border-right: 35px solid var(--secondary-hover);
 }
 
+.arr-btn-right {
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  border-left: 35px solid var(--secondary);
+}
+
+.arr-btn-right:hover {
+  border-left: 35px solid var(--secondary-hover);
+}

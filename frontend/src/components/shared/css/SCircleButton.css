@@ -1,0 +1,15 @@
+.circle-button {
+  padding: 10px;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  flex-grow: 0;
+  align-self: center;
+}
+
+.circle-button_icon {
+  width: 65px;
+  height: 65px;
+}
+
