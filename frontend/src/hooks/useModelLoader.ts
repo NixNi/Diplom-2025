@@ -12,7 +12,6 @@ export const useModelLoader = (scene: THREE.Scene) => {
   const [modelData, setModelData] = useState<ArrayBuffer | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modelLoaded, setModelLoaded] = useState(false);
-  // const [positions, setPositions] = useState<ModelPositions>({ models: [] });
   const dispatch = useAppDispatch();
   const actions = useActions();
 
@@ -26,7 +25,7 @@ export const useModelLoader = (scene: THREE.Scene) => {
     async function modelLoad() {
       try {
         const result = await dispatch(updateModelDataAsync()).unwrap();
-        setModelData(result); // Сохраняем modelData в локальном состоянии
+        setModelData(result);
       } catch (error) {
         console.error("Failed to load model data:", error);
       }
@@ -36,7 +35,6 @@ export const useModelLoader = (scene: THREE.Scene) => {
 
   useEffect(() => {
     setModelLoaded(false);
-    console.log("i worked 2");
     if (!modelData || isLoading || isError) return;
 
     const loader = new GLTFLoader();

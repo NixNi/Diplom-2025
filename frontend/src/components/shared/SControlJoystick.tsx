@@ -4,21 +4,18 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import { useState, useEffect } from "react";
 import { useActions } from "../../hooks/actions";
 import { useAppSelector } from "../../hooks/redux";
-import { useGetModelControls, useGetModelPositions } from "../../hooks/model";
+import { useGetCanControl, useGetModelControls, useGetModelPositions } from "../../hooks/model";
 export interface SControlJoystic {
   element: JoystickControlElement;
-  controlsEnabled: boolean;
-  setControlsEnabled: (e: boolean) => void;
 }
 
 export default function SControlJoystic({
-  element,
-  controlsEnabled,
+  element
 }: SControlJoystic) {
   const actions = useActions();
   const model = useAppSelector((state) => state.model);
   const pos = model.positions;
-
+  const enabled = useGetCanControl();
   const [joystickState, setJoystickState] =
     useState<IJoystickUpdateEvent | null>(null);
   const step = 0.1;
@@ -92,7 +89,7 @@ export default function SControlJoystic({
         move={(e) => setJoystickState(e)}
         start={(e) => setJoystickState(e)}
         stop={() => setJoystickState(null)}
-        disabled={!controlsEnabled}
+        disabled={!enabled}
       />
     </div>
   );

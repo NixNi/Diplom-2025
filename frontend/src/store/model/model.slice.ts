@@ -6,6 +6,9 @@ interface ModelState {
   name: string;
   modelControls: ModelControls;
   positions: ModelPositions;
+  isEnabled: boolean;
+  isControlsEnabled: boolean;
+  isEmergencyStoped: boolean;
   isLoadingControls: boolean;
   isErrorControls: boolean;
   isLoadingData: boolean;
@@ -18,6 +21,9 @@ const initialState: ModelState = {
   name: "default",
   modelControls: { models: [], controlElements: [] },
   positions: { models: [] },
+  isEnabled: true,
+  isControlsEnabled: true,
+  isEmergencyStoped: false,
   isLoadingControls: false,
   isErrorControls: false,
   isLoadingData: false,
@@ -32,7 +38,7 @@ export const updateModelDataAsync = createAsyncThunk<ArrayBuffer, void>(
     const modelName = state.model.name;
 
     if (!modelName || modelName === "default") {
-      throw new Error("Model name is not set or invalid");
+      throw new Error("Choose a model");
     }
 
     try {
@@ -57,7 +63,7 @@ export const updateModelControlsAsync = createAsyncThunk(
     const modelName = state.model.name;
 
     if (!modelName || modelName === "default") {
-      throw new Error("Model name is not set or invalid");
+      throw new Error("Choose a model");
     }
 
     try {
@@ -87,9 +93,22 @@ export const modelSlice = createSlice({
     setModelName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
     },
+    switchEanbled: (state) => {
+      state.isEnabled = !state.isEnabled;
+      if (state.isEnabled) {
+        state.isControlsEnabled = true;
+        state.isEmergencyStoped = false;
+      }
+    },
+    setControlsEnabled: (state, action: PayloadAction<boolean>) => {
+      state.isControlsEnabled = action.payload;
+    },
     resetModelState: (state) => {
       state.modelControls = { models: [], controlElements: [] };
       state.positions = { models: [] };
+      state.isControlsEnabled = true;
+      state.isEnabled = true;
+      state.isEmergencyStoped = false;
       state.isLoadingControls = false;
       state.isErrorControls = false;
       state.errorMessage = null;

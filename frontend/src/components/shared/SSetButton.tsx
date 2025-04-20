@@ -4,26 +4,16 @@ import { useAppSelector } from "../../hooks/redux";
 import "./css/SSetButton.css";
 
 import { useState, useEffect } from "react";
+import { useGetCanControl } from "../../hooks/model";
 
 export interface SSetButton {
   element: SetButtonControlElement;
-  // modelControls: ModelControls;
-  // positions: ModelPositions;
-  // setPositions: (positions: ModelPositions) => void;
-  controlsEnabled: boolean;
-  setControlsEnabled: (e: boolean) => void;
 }
 
-export default function SSetButton({
-  element,
-  // positions,
-  // setPositions,
-  controlsEnabled,
-  setControlsEnabled,
-}: // modelControls,
-SSetButton) {
+export default function SSetButton({ element }: SSetButton) {
   const actions = useActions();
   const model = useAppSelector((state) => state.model);
+  const enabled = useGetCanControl();
   const positions = model.positions;
   const step = 0.1;
   const [clicked, setClicked] = useState(false);
@@ -31,7 +21,7 @@ SSetButton) {
   useEffect(() => {
     let intervalId: number;
     if (clicked) {
-      setControlsEnabled(false);
+      actions.setControlsEnabled(false);
       intervalId = setInterval(() => {
         let ended = true;
         element.props.values.forEach((it) => {
@@ -63,7 +53,7 @@ SSetButton) {
           }
         });
         if (ended) {
-          setControlsEnabled(true);
+          actions.setControlsEnabled(true);
           setClicked(false);
         }
       }, 100);
@@ -82,7 +72,7 @@ SSetButton) {
       <div
         className="setButton"
         onClick={() => {
-          if (controlsEnabled) setClicked(true);
+          if (enabled) setClicked(true);
         }}
       >
         {element.name}

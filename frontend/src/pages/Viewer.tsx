@@ -12,7 +12,6 @@ export default function Viewer() {
   const { data, isLoading, isError } = useGetAllModelNamesQuery();
   const actions = useActions();
 
-
   useEffect(() => {
     if (isLoading || isError) return;
     setModelOptions([
@@ -23,19 +22,20 @@ export default function Viewer() {
 
   return (
     <div>
-      <ModelViewer modelControlsEnable />
-      {!isLoading && (
-        <SLSelect
-          name="modelName"
-          onChange={async (e) => {
-            actions.setModelName(e.target.value);
-            actions.updateModelControlsAsync();
-          }}
-          text="Выберите модель"
-          options={modelOptions}
-        />
-      )}
-      {/* <SArrowCross/> */}
+      <ModelViewer modelControlsEnable>
+        {!isLoading && (
+          <SLSelect
+            className="absolute bottom-0"
+            name="modelName"
+            onChange={async (e) => {
+              actions.setModelName(e.target.value);
+              actions.updateModelControlsAsync();
+            }}
+            text="Выберите модель"
+            options={modelOptions}
+          />
+        )}
+      </ModelViewer>
     </div>
   );
 }

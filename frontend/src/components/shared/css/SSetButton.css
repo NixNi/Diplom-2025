@@ -4,6 +4,8 @@
   border-radius: 10px;
   text-align: center;
   border: 1px solid #3c44ab;
+  cursor: pointer;
+  user-select: none;
 }
 .setButton:hover {
   background-color: #3c44ab;
