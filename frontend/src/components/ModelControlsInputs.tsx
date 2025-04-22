@@ -9,6 +9,7 @@ export const ModelControlsInputs = () => {
   return (
     <div className="flex flex-wrap">
       {modelControls.models.map((it) => {
+        //TODO: remove useGetModels from here, it errors with react hooks not stated number
         const part = useGetModelPositions(it.name) || {
           name: it.name,
         };

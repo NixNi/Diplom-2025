@@ -1,0 +1,22 @@
+.status-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.status-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.status-circle[data-status="Offline"] {
+  background-color: var(--light-background);
+}
+.status-circle[data-status="Emergency Stopped"] {
+  background-color: var(--warning);
+}
+.status-circle[data-status="Working"] {
+  background-color: var(--good);
+}
+.status-circle[data-status="Online"] {
+  background-color: var(--good);
+}

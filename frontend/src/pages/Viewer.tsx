@@ -4,6 +4,7 @@ import SLSelect from "../components/shared/SLSelect";
 import { useEffect, useState } from "react";
 import { useGetAllModelNamesQuery } from "../store/model/model.api";
 import { useActions } from "../hooks/actions";
+import SStatusIndicator from "../components/shared/SStatusIndicator";
 
 export default function Viewer() {
   const [modelOptions, setModelOptions] = useState<
@@ -24,16 +25,19 @@ export default function Viewer() {
     <div>
       <ModelViewer modelControlsEnable>
         {!isLoading && (
-          <SLSelect
-            className="absolute bottom-0"
-            name="modelName"
-            onChange={async (e) => {
-              actions.setModelName(e.target.value);
-              actions.updateModelControlsAsync();
-            }}
-            text="Выберите модель"
-            options={modelOptions}
-          />
+          <>
+            <SStatusIndicator className="absolute right-2 top-1" />
+            <SLSelect
+              className="absolute bottom-0"
+              name="modelName"
+              onChange={async (e) => {
+                actions.setModelName(e.target.value);
+                actions.updateModelControlsAsync();
+              }}
+              text="Выберите модель"
+              options={modelOptions}
+            />
+          </>
         )}
       </ModelViewer>
     </div>

@@ -1,10 +1,6 @@
 import "./css/SArrowCross.css";
 import SArrowButton from "./SArrowButton";
 
-// export interface SArrowCross {
-
-// }
-
 export default function SArrowCross() {
   return (
     <div>
