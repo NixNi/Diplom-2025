@@ -44,6 +44,7 @@
     {
       "name": "DeskMovement",
       "element": "Joystick",
+      "position": "Center",
       "props": {
         "x": "Стол",
         "xpath": ["position", "z"],
@@ -54,6 +55,7 @@
     {
       "name": "VerticalDeskMovement",
       "element": "Joystick",
+      "position": "Center",
       "props": {
         "x": "Основание_Рентгена",
         "xpath": ["position", "z"],
@@ -64,6 +66,7 @@
     {
       "name": "Horizontal View",
       "element": "setButton",
+      "position": "Bottom",
       "props": {
         "values": [
           {
@@ -102,6 +105,7 @@
     {
       "name": "Vertical View",
       "element": "setButton",
+      "position": "Bottom",
       "props": {
         "values": [
           {
@@ -145,6 +149,7 @@
     {
       "name": "Rotate Head X",
       "element": "ArrowButtons",
+      "position": "BottomLeft",
       "props": {
         "type": "up/down",
         "element": "Горизонтальная_ось_1",
@@ -154,6 +159,7 @@
     {
       "name": "Power",
       "element": "PowerButton",
+      "position": "TopLeft",
       "props": {
         "defaultValues": [
           {
@@ -191,6 +197,7 @@
     },
     {
       "name": "Stop",
+      "position": "TopRight",
       "element": "EmergencyStop"
     }
   ]

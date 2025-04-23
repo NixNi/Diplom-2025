@@ -1,0 +1,25 @@
+.control-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  grid-auto-rows: minmax(100px, auto);
+  padding: 10px;
+}
+.control-grid > div {
+  align-items: center;
+}
+.control-grid > div:nth-child(3),
+.control-grid > div:nth-child(6),
+.control-grid > div:nth-child(9) {
+  justify-content: end;
+}
+.control-grid > div:nth-child(1),
+.control-grid > div:nth-child(4),
+.control-grid > div:nth-child(7) {
+  justify-content: start;
+}
+.control-grid > div:nth-child(2),
+.control-grid > div:nth-child(5),
+.control-grid > div:nth-child(8) {
+  justify-content: space-evenly;
+}

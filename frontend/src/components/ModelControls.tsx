@@ -5,6 +5,7 @@ import SSetButton from "./shared/SSetButton";
 import SArrowButtons from "./shared/SArrowButtons";
 import SPowerButton from "./shared/SPowerButton";
 import SEmergencyStopButton from "./shared/SEmergencyStopButton";
+import "./css/ControlGrid.css";
 
 export const ModelControlsComponent = () => {
   const modelControls = useAppSelector((state) => state.model.modelControls);
@@ -22,7 +23,7 @@ export const ModelControlsComponent = () => {
       return <div>Element Not Found</div>;
     return (
       <div key={el.name} className="p-2">
-        <p>{el.name}</p>
+        {/* <p>{el.name}</p> */}
         {(el.element === "Joystick" && (
           <SControlJoystic key={el.name} element={el} />
         )) ||
@@ -42,12 +43,31 @@ export const ModelControlsComponent = () => {
     );
   }
 
+  const positions: { [key: string]: controlElement[] } = {
+    TopLeft: [],
+    Top: [],
+    TopRight: [],
+    Left: [],
+    Center: [],
+    Right: [],
+    BottomLeft: [],
+    Bottom: [],
+    BottomRight: [],
+  };
+
+  modelControls.controlElements?.forEach((el) => {
+    const position =
+      el.position && positions[el.position] ? el.position : "Center";
+    positions[position].push(el);
+  });
+
   return (
-    <div className="flex flex-wrap">
-      {modelControls.controlElements &&
-        modelControls.controlElements.map((it) => {
-          return chooseElement(it);
-        })}
+    <div className="control-grid">
+      {Object.keys(positions).map((position) => (
+        <div key={position} className={`flex`}>
+          {positions[position].map((el) => chooseElement(el))}
+        </div>
+      ))}
     </div>
   );
 };

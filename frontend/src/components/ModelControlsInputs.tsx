@@ -17,7 +17,7 @@ export const ModelControlsInputs = () => {
         return (
           <div key={it.name} className="p-2 m-2 border-light-background">
             <p>{it.name.replace(/_/g, " ")}</p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               {it.position && (
                 <div>
                   <p>Позиция</p>
