@@ -4,6 +4,7 @@ import "./css/SStatusIndicator.css";
 
 const SStatusIndicator = (props: HTMLAttributes<HTMLDivElement>) => {
   const model = useAppSelector((state) => state.model);
+  const visible = model.isErrorData || model.isLoadingData;
   const status =
     (model.isEnabled &&
       model.isControlsEnabled &&

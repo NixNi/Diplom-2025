@@ -92,6 +92,14 @@ export const modelSlice = createSlice({
   reducers: {
     setModelName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
+      state.modelControls = { models: [], controlElements: [] };
+      state.positions = { models: [] };
+      state.isControlsEnabled = true;
+      state.isEnabled = true;
+      state.isEmergencyStoped = false;
+      state.isLoadingControls = false;
+      state.isErrorControls = false;
+      state.errorMessage = null;
     },
     switchEanbled: (state) => {
       state.isEnabled = !state.isEnabled;
