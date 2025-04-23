@@ -23,30 +23,32 @@ export default function SPowerButton({ element }: SPowerButton) {
       intervalId = setInterval(() => {
         let ended = true;
         element.props.defaultValues.forEach((it) => {
-          const elementPosition = positions.models.find(
-            (itv) => itv.name === it.element
-          );
-          if (elementPosition) {
-            const currentValue = elementPosition?.[it.path[0]]?.[it.path[1]];
-            if (currentValue !== undefined && currentValue !== it.value) {
-              ended = false;
-              const elem = { ...elementPosition };
-              elem[it.path[0]] = { ...elem[it.path[0]] };
-              if (currentValue > it.value) {
-                //@ts-ignore
-                elem[it.path[0]][it.path[1]] = Math.max(
-                  currentValue - step,
-                  it.value
-                );
-              }
-              if (currentValue < it.value) {
-                //@ts-ignore
-                elem[it.path[0]][it.path[1]] = Math.min(
-                  currentValue + step,
-                  it.value
-                );
-              }
-              actions.updateModelPositionLocal(elem);
+          let currentValue: any = positions;
+          const path_spl = it.path.split("/");
+          for (let i = 0; i < path_spl.length - 1; i++) {
+            const key = path_spl[i];
+            if (!currentValue[key]) {
+              currentValue[key] = {};
+            }
+            currentValue = currentValue[key];
+          }
+          currentValue = currentValue[path_spl[path_spl.length - 1]] as number;
+
+          if (currentValue !== undefined && currentValue !== it.value) {
+            ended = false;
+            if (currentValue > it.value) {
+              actions.updateModelPositionLocal({
+                command: "set",
+                value: Math.max(currentValue - step, it.value),
+                path: it.path,
+              });
+            }
+            if (currentValue < it.value) {
+              actions.updateModelPositionLocal({
+                command: "set",
+                value: Math.min(currentValue + step, it.value),
+                path: it.path,
+              });
             }
           }
         });

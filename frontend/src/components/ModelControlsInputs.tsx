@@ -1,28 +1,26 @@
 import { useActions } from "../hooks/actions";
-import { useGetModelPositions } from "../hooks/model";
 import { useAppSelector } from "../hooks/redux";
+import { xyz } from "../types/models";
 
 export const ModelControlsInputs = () => {
   const actions = useActions();
   const model = useAppSelector((state) => state.model);
-  const modelControls = model.modelControls;
+  const modelControls = model.modelControls.models;
   return (
     <div className="flex flex-wrap">
-      {modelControls.models.map((it) => {
+      {Object.keys(modelControls).map((it) => {
         //TODO: remove useGetModels from here, it errors with react hooks not stated number
-        const part = useGetModelPositions(it.name) || {
-          name: it.name,
-        };
+        const part = model.positions[it];
 
         return (
-          <div key={it.name} className="p-2 m-2 border-light-background">
-            <p>{it.name.replace(/_/g, " ")}</p>
+          <div key={it} className="p-2 m-2 border-light-background">
+            <p>{it.replace(/_/g, " ")}</p>
             <div className="flex gap-3 flex-wrap">
-              {it.position && (
+              {modelControls[it].position && (
                 <div>
                   <p>Позиция</p>
                   {(
-                    Object.keys(it.position) as Array<keyof typeof it.position>
+                    Object.keys(modelControls[it].position) as Array<keyof xyz>
                   ).map((axis) => (
                     <div
                       key={`pos-${axis}`}
@@ -32,25 +30,31 @@ export const ModelControlsInputs = () => {
                       <input
                         type="number"
                         value={Number(part.position?.[axis] || 0)}
-                        min={Number(it.position?.[axis]?.[0]) || -1000}
-                        max={Number(it.position?.[axis]?.[1]) || 1000}
+                        min={
+                          Number(modelControls[it]?.position?.[axis]?.[0]) ||
+                          -10
+                        }
+                        max={
+                          Number(modelControls[it]?.position?.[axis]?.[1]) || 10
+                        }
                         step={0.1}
                         onChange={(e) => {
-                          const partd = { ...part };
-                          partd.position = { ...partd.position };
-                          partd.position[axis] = Number(e.target.value);
-                          actions.updateModelPositionLocal(partd);
+                          actions.updateModelPositionLocal({
+                            command: "set",
+                            value: Number(e.target.value),
+                            path: `${it}/position/${axis}`,
+                          });
                         }}
                       />
                     </div>
                   ))}
                 </div>
               )}
-              {it.rotation && (
+              {modelControls[it].rotation && (
                 <div>
                   <p>Поворот</p>
                   {(
-                    Object.keys(it.rotation) as Array<keyof typeof it.rotation>
+                    Object.keys(modelControls[it].rotation) as Array<keyof xyz>
                   ).map((axis) => (
                     <div
                       key={`rot-${axis}`}
@@ -60,14 +64,19 @@ export const ModelControlsInputs = () => {
                       <input
                         type="number"
                         value={Number(part.rotation?.[axis] || 0)}
-                        min={Number(it.rotation?.[axis]?.[0]) || -1000}
-                        max={Number(it.rotation?.[axis]?.[1]) || 1000}
+                        min={
+                          Number(modelControls[it].rotation?.[axis]?.[0]) || -10
+                        }
+                        max={
+                          Number(modelControls[it].rotation?.[axis]?.[1]) || 10
+                        }
                         step={0.1}
                         onChange={(e) => {
-                          const partd = { ...part };
-                          partd.rotation = { ...partd.rotation };
-                          partd.rotation[axis] = Number(e.target.value);
-                          actions.updateModelPositionLocal(partd);
+                          actions.updateModelPositionLocal({
+                            command: "set",
+                            value: Number(e.target.value),
+                            path: `${it}/rotation/${axis}`,
+                          });
                         }}
                       />
                     </div>

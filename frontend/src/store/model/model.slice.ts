@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ModelControls, ModelPositions, xyz } from "../../types/models";
+import { ModelControls, ModelPositions } from "../../types/models";
 
 interface ModelState {
   id: number;
@@ -19,8 +19,8 @@ interface ModelState {
 const initialState: ModelState = {
   id: 0,
   name: "default",
-  modelControls: { models: [], controlElements: [] },
-  positions: { models: [] },
+  modelControls: { models: {}, controlElements: [] },
+  positions: {},
   isEnabled: true,
   isControlsEnabled: true,
   isEmergencyStoped: false,
@@ -92,8 +92,8 @@ export const modelSlice = createSlice({
   reducers: {
     setModelName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
-      state.modelControls = { models: [], controlElements: [] };
-      state.positions = { models: [] };
+      state.modelControls = { models: {}, controlElements: [] };
+      state.positions = {};
       state.isControlsEnabled = true;
       state.isEnabled = true;
       state.isEmergencyStoped = false;
@@ -115,8 +115,8 @@ export const modelSlice = createSlice({
       state.isEmergencyStoped = true;
     },
     resetModelState: (state) => {
-      state.modelControls = { models: [], controlElements: [] };
-      state.positions = { models: [] };
+      state.modelControls = { models: {}, controlElements: [] };
+      state.positions = {};
       state.isControlsEnabled = true;
       state.isEnabled = true;
       state.isEmergencyStoped = false;
@@ -131,16 +131,44 @@ export const modelSlice = createSlice({
     updateModelPositionLocal: (
       state,
       action: PayloadAction<{
-        name: string;
-        position?: xyz;
-        rotation?: xyz;
+        command: "set" | "add";
+        path: string;
+        value: number;
       }>
     ) => {
-      const { name, position, rotation } = action.payload;
-      state.positions.models = [
-        ...state.positions.models.filter((m) => m.name !== name),
-        { name, position, rotation },
-      ];
+      const { command, path, value } = action.payload;
+      const path_spl = path.split("/");
+      if (path_spl.length === 0) return;
+
+      let current: any = state.positions;
+      let currentControls: any = state.modelControls.models;
+      for (let i = 0; i < path_spl.length - 1; i++) {
+        const key = path_spl[i];
+        if (!current[key]) {
+          current[key] = {};
+        }
+        if (!currentControls[key]) {
+          currentControls[key] = {};
+        }
+        current = current[key];
+        currentControls = currentControls[key];
+      }
+
+      // Имя конечного свойства
+      const lastKey = path_spl[path_spl.length - 1];
+      if (!currentControls[lastKey] || currentControls[lastKey].length !== 2)
+        currentControls[lastKey] = [-10, 10];
+      const [min, max] = currentControls[lastKey] as [number, number];
+
+      // Обновляем значение в зависимости от команды
+      if (command === "set") {
+        current[lastKey] = Math.max(Math.min(value, max), min);
+      } else if (command === "add") {
+        current[lastKey] = Math.max(
+          Math.min((current[lastKey] || 0) + value, max),
+          min
+        );
+      }
     },
   },
   extraReducers: (builder) => {

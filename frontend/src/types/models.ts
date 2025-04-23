@@ -11,23 +11,30 @@ export interface xyzController {
 }
 
 export interface ModelPositions {
-  models: Array<{
-    name: string;
+  [key: string]: {
     position?: xyz;
     rotation?: xyz;
-  }>;
+  };
 }
 export type modelValuePath = ["position" | "rotation", keyof xyz];
-export type interfacePositions = "TopLeft" | "Top" | "TopRight" | "Left" | "Center" | "Right" | "BottomLeft" | "Bottom" | "BottomRight" | undefined;
+export type interfacePositions =
+  | "TopLeft"
+  | "Top"
+  | "TopRight"
+  | "Left"
+  | "Center"
+  | "Right"
+  | "BottomLeft"
+  | "Bottom"
+  | "BottomRight"
+  | undefined;
 export interface JoystickControlElement {
   name: string;
   element: "Joystick";
   position: interfacePositions;
   props: {
-    x: string;
-    y: string;
-    xpath: modelValuePath;
-    ypath: modelValuePath;
+    xpath: string;
+    ypath: string;
   };
 }
 export interface SetButtonControlElement {
@@ -37,8 +44,7 @@ export interface SetButtonControlElement {
   props: {
     values: [
       {
-        element: string;
-        path: modelValuePath;
+        path: string;
         value: number;
       }
     ];
@@ -50,8 +56,7 @@ export interface SArrowButtonsElement {
   position: interfacePositions;
   props: {
     type: "up/down" | "left/right";
-    element: string;
-    path: modelValuePath;
+    path: string;
   };
 }
 
@@ -62,8 +67,7 @@ export interface SPowerButtonElement {
   props: {
     defaultValues: [
       {
-        element: string;
-        path: modelValuePath;
+        path: string;
         value: number;
       }
     ];
@@ -82,12 +86,10 @@ export type controlElement =
   | SArrowButtonsElement
   | SPowerButtonElement
   | SEmergencyStopElement;
-  
+
 export interface ModelControls {
-  models: Array<{
-    name: string;
-    position?: xyzController;
-    rotation?: xyzController;
-  }>;
+  models: {
+    [key: string]: { position?: xyzController; rotation?: xyzController };
+  };
   controlElements: Array<controlElement>;
 }

@@ -51,15 +51,13 @@ export const useModelLoader = (scene: THREE.Scene) => {
         scene.add(gltf.scene);
         setModelLoaded(true);
 
-        const newPositions: ModelPositions = { models: [] };
+        const newPositions: ModelPositions = {};
         gltf.scene.traverse((child) => {
           if (child.type === "Mesh") {
             child.castShadow = true;
             child.receiveShadow = true;
           }
-          const controlEntry = modelControls?.models?.find(
-            (m) => m.name === child.name
-          );
+          const controlEntry = modelControls?.models?.[child.name];
           if (controlEntry) {
             const position: xyz = {};
             const rotation: xyz = {};
@@ -82,11 +80,10 @@ export const useModelLoader = (scene: THREE.Scene) => {
               });
             }
 
-            newPositions.models.push({
-              name: child.name,
+            newPositions[child.name] = {
               position: Object.keys(position).length ? position : undefined,
               rotation: Object.keys(rotation).length ? rotation : undefined,
-            });
+            };
           }
         });
 
@@ -100,18 +97,24 @@ export const useModelLoader = (scene: THREE.Scene) => {
 
   useEffect(() => {
     if (modelLoaded && modelRef.current) {
-      positions.models.forEach((it) => {
-        const part = modelRef.current?.getObjectByName(it.name);
+      Object.keys(positions).forEach((it) => {
+        const part = modelRef.current?.getObjectByName(it);
         if (part) {
-          if (it.position) {
-            if (it.position.x) part.position.x = it.position.x;
-            if (it.position.y) part.position.y = it.position.y;
-            if (it.position.z) part.position.z = it.position.z;
+          if (positions[it].position) {
+            if (positions[it].position.x)
+              part.position.x = positions[it].position.x;
+            if (positions[it].position.y)
+              part.position.y = positions[it].position.y;
+            if (positions[it].position.z)
+              part.position.z = positions[it].position.z;
           }
-          if (it.rotation) {
-            if (it.rotation.x) part.rotation.x = it.rotation.x;
-            if (it.rotation.y) part.rotation.y = it.rotation.y;
-            if (it.rotation.z) part.rotation.z = it.rotation.z;
+          if (positions[it].rotation) {
+            if (positions[it].rotation.x)
+              part.rotation.x = positions[it].rotation.x;
+            if (positions[it].rotation.y)
+              part.rotation.y = positions[it].rotation.y;
+            if (positions[it].rotation.z)
+              part.rotation.z = positions[it].rotation.z;
           }
         }
       });

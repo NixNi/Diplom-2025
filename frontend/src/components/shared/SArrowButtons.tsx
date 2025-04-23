@@ -1,8 +1,6 @@
 import { useActions } from "../../hooks/actions";
 import {
   useGetCanControl,
-  useGetModelControls,
-  useGetModelPositions,
 } from "../../hooks/model";
 import SArrowButton from "./SArrowButton";
 import { SArrowButtonsElement } from "../../types/models";
@@ -16,23 +14,10 @@ export default function SArrowButtons({ element }: SArrowButtonsProps) {
   const actions = useActions();
   const enabled = useGetCanControl();
   const step = 0.1; // Шаг изменения позиции
-  const name = element.props.element;
   const path = element.props.path;
-  const part = useGetModelPositions(name) || { name };
-  const control = useGetModelControls(name) || { name };
-  const limits = control[path[0]]?.[path[1]] || [-10, 10];
   const [direction, setDirection] = useState<"increase" | "decrease" | null>(
     null
   );
-
-  // Функция для обновления позиции
-  function updateValue(newValue: number) {
-    const updatedPart = { ...part };
-    updatedPart[path[0]] = { ...updatedPart[path[0]] };
-    //@ts-ignore
-    updatedPart[path[0]][path[1]] = newValue;
-    actions.updateModelPositionLocal(updatedPart);
-  }
 
   // Обработчик для увеличения значения
   const handleIncrease = () => {
@@ -58,16 +43,23 @@ export default function SArrowButtons({ element }: SArrowButtonsProps) {
     if (!direction || !enabled) return;
 
     const intervalId = setInterval(() => {
-      const currentValue = part[path[0]]?.[path[1]] || 0;
-      if (direction === "increase") {
-        updateValue(Math.min(currentValue + step, limits[1]));
+      if(direction === "increase") {
+        actions.updateModelPositionLocal({
+          command: "add",
+          value: step,
+          path: path,
+        });
       } else if (direction === "decrease") {
-        updateValue(Math.max(currentValue - step, limits[0]));
+        actions.updateModelPositionLocal({
+          command: "add",
+          value: -step,
+          path: path,
+        });;
       }
     }, 100);
 
     return () => clearInterval(intervalId);
-  }, [direction, enabled, part, limits, path, updateValue]);
+  }, [direction, enabled, path]);
 
   return (
     <div className="m-2 flex">
