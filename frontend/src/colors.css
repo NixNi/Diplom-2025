@@ -5,7 +5,7 @@
   );
   --text: #efe9f4;
   --secondary: rgb(16, 91, 51);
-  /* --secondary: #5863f8; */
+  --secondary: #5863f8;
   --secondary-dark: color(
     from var(--secondary) xyz calc(x * 0.21) calc(y * 0.21) calc(z * 0.21)
   );

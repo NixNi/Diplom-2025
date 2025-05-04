@@ -6,7 +6,7 @@ import Viewer from "./Viewer";
 export default function Settings() {
   return (
     <STabViewer tabsPosition="left">
-      <STab title="Просмотр моделей">
+      <STab title="Просмотр моделей" default>
         <Viewer />
       </STab>
       <STab title="Загрузить модель">

@@ -1,16 +1,16 @@
+import { connectReducer } from "./connect/connect.slice";
 import { Action, ThunkDispatch, configureStore } from "@reduxjs/toolkit";
-// import { userApi } from "./user/user.api";
-// import { userReducer } from "./user/user.slice";
 import { modelApi } from "./model/model.api";
 import { modelReducer } from "./model/model.slice";
 import { useDispatch } from "react-redux";
+import { connectApi } from "./connect/connect.api";
 
 export const store = configureStore({
   reducer: {
     [modelApi.reducerPath]: modelApi.reducer,
     model: modelReducer,
-    // [userApi.reducerPath]: userApi.reducer,
-    // user: userReducer,
+    [connectApi.reducerPath]: connectApi.reducer,
+    connect: connectReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -18,8 +18,9 @@ export const store = configureStore({
         // Ignore these action types
         ignoredActions: ["model/updateModelDataAsync/fulfilled"],
       },
-    }).concat(modelApi.middleware),
-  // .concat(userApi.middleware),
+    })
+      .concat(modelApi.middleware)
+      .concat(connectApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

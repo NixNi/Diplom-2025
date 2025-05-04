@@ -1,0 +1,17 @@
+.connect {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.add-connection {
+  font-size: 20px;
+  padding: 20px;
+  margin: auto;
+  margin-top: 30px;
+  background-color: var(--secondary);
+  border-radius: 30px;
+  cursor: pointer;
+}
+.add-connection:hover {
+  background-color: var(--secondary-hover);
+}
