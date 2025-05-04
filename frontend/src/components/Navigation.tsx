@@ -8,10 +8,10 @@ export default function Navigation() {
       </Link>
       <div className="flex gap-2">
         <Link
-          to="/AddModel"
+          to="/Settings"
           className="color-zinc-2 no-underline hover:color-emerald-2"
         >
-          Загрузка
+         Настройки
         </Link>
         <Link
           to="/"

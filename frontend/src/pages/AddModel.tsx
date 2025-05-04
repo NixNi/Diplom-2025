@@ -4,6 +4,7 @@ import ModelPreview from "../components/ModelPreview";
 import { useNavigate } from "react-router-dom";
 
 const AddModel = () => {
+  //TODO: Fix model loading after error
   const [modelName, setModelName] = useState("");
   const [modelFile, setModelFile] = useState<ArrayBuffer | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

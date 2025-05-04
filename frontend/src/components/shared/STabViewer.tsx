@@ -26,8 +26,8 @@ const STabViewer = ({
   }, []);
 
   return (
-    <div {...rest} className={`tabs-viewer ` + rest.className}>
-      <div className="flex tabs-titles-container">
+    <div {...rest} className={`tabs-viewer ${tabsPosition} ` + rest.className}>
+      <div className="tabs-titles-container">
         {Object.keys(tabs).map((it) => (
           <div
             key={it}
