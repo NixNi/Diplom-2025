@@ -4,7 +4,7 @@ import { ServerDataResponse, ServerResponse } from "../types/server"; // Пре�
 export const connectApi = createApi({
   reducerPath: "connect/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/connects", // Базовый URL для всех запросов
+    baseUrl: "/api/connect", // Базовый URL для всех запросов
   }),
   endpoints: (build) => ({
     addConnect: build.mutation<
@@ -22,6 +22,4 @@ export const connectApi = createApi({
   }),
 });
 
-export const {
-  useAddConnectMutation,
-} = connectApi;
+export const { useAddConnectMutation } = connectApi;

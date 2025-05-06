@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 interface ConnectState {
   ip: string | null;
   port: number | null;
@@ -8,21 +7,22 @@ interface ConnectState {
   password: string | null;
 }
 
-
 const initialState: ConnectState = {
   ip: null,
   port: null,
   user: null,
-  password: null
+  password: null,
 };
-
 
 export const connectSlice = createSlice({
   name: "connect",
   initialState,
   reducers: {
     setConnect: (state, action: PayloadAction<ConnectState>) => {
-      state = action.payload;
+      state.ip = action.payload.ip;
+      state.port = action.payload.port;
+      state.user = action.payload.user;
+      state.password = action.payload.password;
     },
     resetConnectState: (state) => {
       state.ip = null;
@@ -30,15 +30,13 @@ export const connectSlice = createSlice({
       state.user = null;
       state.port = null;
     },
-   
   },
   extraReducers: (builder) => {
-    builder
+    builder;
   },
 });
 
-export const modelActions = {
+export const connectActions = {
   ...connectSlice.actions,
- 
 };
 export const connectReducer = connectSlice.reducer;

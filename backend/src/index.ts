@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 
 import d3ModelRouter from "./routes/d3Model";
 import modelData from "./routes/modelsData";
+import connectionRouter from "./routes/connection";
 
 const server = express();
 const port = process.env.PORT || 8046;
@@ -41,5 +42,6 @@ server.get("/", (request, response) => {
 
 server.use("/api/models", d3ModelRouter);
 server.use("/api/json", modelData)
+server.use("/api/connect", connectionRouter)
 
 server.listen(port, () => console.log(`Running on port ${port}`));
