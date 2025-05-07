@@ -4,6 +4,7 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import { useState, useEffect } from "react";
 import { useActions } from "../../hooks/actions";
 import { useGetCanControl } from "../../hooks/model";
+// import { sendModelCommandAsync } from "../../store/model/model.slice";
 export interface SControlJoystic {
   element: JoystickControlElement;
 }
@@ -22,6 +23,11 @@ export default function SControlJoystic({ element }: SControlJoystic) {
         switch (joystickState.direction) {
           case "FORWARD":
             actions.updateModelPositionLocal({
+              command: "add",
+              value: step,
+              path: element.props.ypath,
+            });
+            actions.sendModelCommandAsync({
               command: "add",
               value: step,
               path: element.props.ypath,

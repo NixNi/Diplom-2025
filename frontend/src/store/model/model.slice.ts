@@ -14,6 +14,7 @@ interface ModelState {
   isLoadingData: boolean;
   isErrorData: boolean;
   errorMessage: string | null;
+  mode: "online" | "offline";
 }
 
 const initialState: ModelState = {
@@ -29,6 +30,7 @@ const initialState: ModelState = {
   isLoadingData: false,
   isErrorData: false,
   errorMessage: null,
+  mode: "offline",
 };
 
 export const updateModelDataAsync = createAsyncThunk<ArrayBuffer, void>(
@@ -86,6 +88,45 @@ export const updateModelControlsAsync = createAsyncThunk(
   }
 );
 
+export const sendModelCommandAsync = createAsyncThunk(
+  "model/sendModelCommandAsync",
+  async (
+    command: { command: "set" | "add"; path: string; value: number },
+    { getState }
+  ) => {
+    const state = getState() as {
+      model: ModelState;
+      connect: { ip: string | null; port: number | null };
+    };
+    const { ip, port } = state.connect;
+    console.log(command)
+    if (!ip || !port) {
+      throw new Error("Connection details are missing");
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8046/api/connect/command`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ command, connect: state.connect }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to send command: ${response.statusText}`);
+      }
+
+      return command;
+    } catch (error) {
+      throw new Error(`Error sending command: ${(error as Error).message}`);
+    }
+  }
+);
+
 export const modelSlice = createSlice({
   name: "model",
   initialState,
@@ -107,6 +148,9 @@ export const modelSlice = createSlice({
         state.isControlsEnabled = true;
         state.isEmergencyStoped = false;
       }
+    },
+    setMode: (state, action: PayloadAction<"online" | "offline">) => {
+      state.mode = action.payload;
     },
     setControlsEnabled: (state, action: PayloadAction<boolean>) => {
       state.isControlsEnabled = action.payload;
@@ -211,5 +255,6 @@ export const modelActions = {
   ...modelSlice.actions,
   updateModelControlsAsync,
   updateModelDataAsync,
+  sendModelCommandAsync
 };
 export const modelReducer = modelSlice.reducer;

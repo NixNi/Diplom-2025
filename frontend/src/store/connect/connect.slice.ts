@@ -7,11 +7,18 @@ interface ConnectState {
   password: string | null;
 }
 
+// const initialState: ConnectState = {
+//   ip: null,
+//   port: null,
+//   user: null,
+//   password: null,
+// };
+
 const initialState: ConnectState = {
-  ip: null,
-  port: null,
-  user: null,
-  password: null,
+  ip: "localhost",
+  port: 15237,
+  user: "user",
+  password: "123456",
 };
 
 export const connectSlice = createSlice({

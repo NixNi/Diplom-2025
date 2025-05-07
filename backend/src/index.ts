@@ -2,14 +2,23 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 import d3ModelRouter from "./routes/d3Model";
 import modelData from "./routes/modelsData";
 import connectionRouter from "./routes/connection";
 
-const server = express();
-const port = process.env.PORT || 8046;
+const app = express();
+const server = createServer(app);
 const whitelist = ["http://localhost:8046", "http://localhost:8045"];
+const io = new Server(server, {
+  cors: {
+    origin: whitelist,
+  },
+});
+const port = process.env.PORT || 8046;
+
 const corsOptions = {
   origin: (origin: any, callback: any) => {
     if (whitelist.indexOf(origin) !== -1) {
@@ -22,7 +31,6 @@ const corsOptions = {
   credentials: true,
 };
 
-
 const middleware = [
   cors(corsOptions),
   bodyParser.urlencoded({
@@ -34,14 +42,23 @@ const middleware = [
   cookieParser(),
 ];
 
-middleware.forEach((it) => server.use(it));
+middleware.forEach((it) => app.use(it));
 
-server.get("/", (request, response) => {
+app.get("/", (request, response) => {
   response.send("It is working api, you check manually");
 });
 
-server.use("/api/models", d3ModelRouter);
-server.use("/api/json", modelData)
-server.use("/api/connect", connectionRouter)
+app.use("/api/models", d3ModelRouter);
+app.use("/api/json", modelData);
+app.use("/api/connect", connectionRouter);
+
+io.on("connection", (socket) => {
+  console.log(`Client connected: ${socket.id}`);
+  console.log("adf" + io.engine.clientsCount)
+
+  socket.on("disconnect", () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
+});
 
 server.listen(port, () => console.log(`Running on port ${port}`));
