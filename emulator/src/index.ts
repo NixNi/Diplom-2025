@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import socketManager from "./middleware/sockets";
 
 const app = express();
 const port = process.env.PORT || 12537;
@@ -50,21 +51,7 @@ app.get("/", (request, response) => {
 });
 
 // Обработка подключений Socket.IO
-io.on("connection", (socket) => {
-  console.log(`Client connected: ${socket.id}`);
-
-  // Обработка ping-запроса от клиента
-  socket.on("ping", (callback) => {
-    console.log(`Received ping from ${socket.id}`);
-    if (typeof callback === "function") {
-      callback({ status: "pong", timestamp: Date.now() });
-    }
-  });
-
-  socket.on("disconnect", () => {
-    console.log(`Client disconnected: ${socket.id}`);
-  });
-});
+io.on("connection", socketManager);
 
 // Запускаем HTTP-сервер вместо Express-сервера
 httpServer.listen(port, () => console.log(`Running on port ${port}`));

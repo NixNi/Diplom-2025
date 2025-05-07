@@ -8,7 +8,7 @@ export const sendCommand = async (command: {
   value: number;
 }) => {
   if (socket && socket.connected) {
-    socket.emit("command", command);
+    socket.emit("clientCommand", command);
   } else {
     console.error("Socket is not connected");
   }

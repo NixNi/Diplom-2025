@@ -16,7 +16,7 @@ interface ConnectState {
 
 const initialState: ConnectState = {
   ip: "localhost",
-  port: 15237,
+  port: 12537,
   user: "user",
   password: "123456",
 };

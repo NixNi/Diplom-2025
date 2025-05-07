@@ -36,14 +36,14 @@ export const useSocket = () => {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("command", onCommandEvent);
-    
-    socket.emit("getModel", setModel);
+    socket.on("clientCommand", onCommandEvent);
+
+    socket.emit("getModel", connectState, setModel);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("command", onCommandEvent);
+      socket.off("clientCommand", onCommandEvent);
     };
   }, []);
 };

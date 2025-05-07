@@ -22,7 +22,7 @@ const connectionRouter = express.Router();
 connectionRouter.post("/", async (req, res) => {
   console.log(req.body)
   await errorHandler(res, async () => {
-    WsConnect(req.body.ip, req.body.port)
+    // WsConnect(req.body.ip, req.body.port)
     res.json({
       status: "success",
       message: `Model data added successfully`,

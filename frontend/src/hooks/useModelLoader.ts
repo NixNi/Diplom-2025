@@ -47,6 +47,10 @@ export const useModelLoader = (scene: THREE.Scene) => {
       modelData,
       "",
       (gltf) => {
+        if (modelRef.current) {
+          scene.remove(modelRef.current);
+          modelRef.current = null;
+        }
         modelRef.current = gltf.scene;
         scene.add(gltf.scene);
         setModelLoaded(true);
@@ -93,6 +97,12 @@ export const useModelLoader = (scene: THREE.Scene) => {
         setErrorMessage("Error parsing model: " + error.message);
       }
     );
+    return () => {
+      if (modelRef.current) {
+        scene.remove(modelRef.current);
+        modelRef.current = null;
+      }
+    };
   }, [modelData, scene, modelControls]);
 
   useEffect(() => {

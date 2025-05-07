@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import d3ModelRouter from "./routes/d3Model";
 import modelData from "./routes/modelsData";
 import connectionRouter from "./routes/connection";
+import socketManager from "./middleware/sockets";
 
 const app = express();
 const server = createServer(app);
@@ -52,25 +53,6 @@ app.use("/api/models", d3ModelRouter);
 app.use("/api/json", modelData);
 app.use("/api/connect", connectionRouter);
 
-io.on("connection", (socket) => {
-  console.log(`Client connected: ${socket.id}`);
-
-  socket.on("getModel", (callback: (arg: string) => void) => {
-    callback("Xray 2");
-  });
-  interface CommandResponse {
-    command: "set" | "add";
-    path: string;
-    value: number;
-  }
-  socket.on("command", (arg: CommandResponse) => {
-    // console.log(arg);
-    socket.emit("command", arg);
-  });
-
-  socket.on("disconnect", () => {
-    console.log(`Client disconnected: ${socket.id}`);
-  });
-});
+io.on("connection", socketManager);
 
 server.listen(port, () => console.log(`Running on port ${port}`));

@@ -1,33 +1,24 @@
-import express from "express";
-import { io as ioClient } from "socket.io-client";
-
-let serverSocket: any = null;
+import { io as ioClient, Socket } from "socket.io-client";
 
 export function WsConnect(ip: string, port: number) {
-  if (serverSocket) serverSocket.disconnect();
+  return new Promise<Socket>((resolve, reject) => {
+    const url = `http://${ip}:${port}`;
+    const serverSocket = ioClient(url);
 
-  const url = `http://${ip}:${port}`;
-  serverSocket = ioClient(url);
+    serverSocket.on("connect", () => {
+      console.log("Connected to Emulator");
+      resolve(serverSocket);
+    });
 
-  serverSocket.on("connect", () => {
-    console.log("Connected to Socket.IO server");
+    serverSocket.on("connect_error", (err) => {
+      serverSocket.disconnect();
+      reject(new Error("Server Not Connected"));
+    });
 
-    // Send ping every 5 seconds
-    setInterval(() => {
-      serverSocket.emit("ping", (response: {type: string, timestamp:number}) => {
-        console.log("Pong received:", response);
-        console.log(`Latency: ${Date.now() - response.timestamp}ms`);
-      });
-    }, 5000);
+    serverSocket.on("disconnect", () => {
+      console.log("Disconnected from Emulator");
+    });
+
+    
   });
-
-  serverSocket.on("disconnect", () => {
-    console.log("Disconnected from Socket.IO server");
-  });
-}
-
-export default function useServerSocket() {
-  if (serverSocket)
-    return serverSocket;
-  else throw Error("Server Not Connected")
 }
