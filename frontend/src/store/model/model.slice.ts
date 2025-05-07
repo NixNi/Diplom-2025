@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ModelControls, ModelPositions } from "../../types/models";
+// import { sendCommand } from "../../hooks/socket";
+import { sendCommand } from "../../socket";
 
 interface ModelState {
   id: number;
@@ -99,7 +101,7 @@ export const sendModelCommandAsync = createAsyncThunk(
       connect: { ip: string | null; port: number | null };
     };
     const { ip, port } = state.connect;
-    console.log(command)
+    console.log(command);
     if (!ip || !port) {
       throw new Error("Connection details are missing");
     }
@@ -178,9 +180,14 @@ export const modelSlice = createSlice({
         command: "set" | "add";
         path: string;
         value: number;
+        isNeedOnlineCheck?: boolean;
       }>
     ) => {
-      const { command, path, value } = action.payload;
+      const { command, path, value, isNeedOnlineCheck = true } = action.payload;
+      if (state.mode === "online" && isNeedOnlineCheck) {
+        sendCommand(action.payload);
+        return;
+      }
       const path_spl = path.split("/");
       if (path_spl.length === 0) return;
 
@@ -255,6 +262,6 @@ export const modelActions = {
   ...modelSlice.actions,
   updateModelControlsAsync,
   updateModelDataAsync,
-  sendModelCommandAsync
+  sendModelCommandAsync,
 };
 export const modelReducer = modelSlice.reducer;

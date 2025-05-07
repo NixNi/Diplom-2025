@@ -1,61 +1,49 @@
-import { io, Socket } from "socket.io-client";
+import { socket } from "../socket";
+import { useActions } from "./actions";
 import { useAppSelector } from "./redux";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 interface CommandResponse {
   command: "set" | "add";
   path: string;
   value: number;
+  isNeedOnlineCheck?: boolean;
 }
 
-export const useSocket = (onCommand: (data: CommandResponse) => void) => {
-  const socketRef = useRef<Socket | null>(null);
+export const useSocket = () => {
   const connectState = useAppSelector((state) => state.connect);
+  const actions = useActions();
 
   useEffect(() => {
-    if (
-      connectState.ip &&
-      connectState.port &&
-      !socketRef.current
-    ) {
-      const socket = io(`http://localhost:8046`, {
-        // auth: {
-        //   user: connectState.user,
-        //   password: connectState.password,
-        // },
-      });
-
-      socketRef.current = socket;
-
-      socket.on("connect", () => {
-        console.log("Connected to Socket.IO server");
-      });
-
-      socket.on("command", (data: CommandResponse) => {
-        onCommand(data);
-      });
-
-      socket.on("disconnect", () => {
-        console.log("Disconnected from Socket.IO server");
-      });
-
-      return () => {
-        socket.disconnect();
-        socketRef.current = null;
-      };
+    function onConnect() {
+      console.log("Connected to Socket.IO server");
     }
-  }, [connectState.ip, connectState.port, connectState.user, connectState.password, onCommand]);
 
-  return socketRef.current;
-};
+    function onDisconnect() {
+      console.log("Disconnected from Socket.IO server");
+    }
 
-export const sendCommand = async (
-  socket: Socket | null,
-  command: { command: "set" | "add"; path: string; value: number }
-) => {
-  if (socket && socket.connected) {
-    socket.emit("command", command);
-  } else {
-    console.error("Socket is not connected");
-  }
+    function onCommandEvent(data: CommandResponse) {
+      data.isNeedOnlineCheck = false;
+      actions.updateModelPositionLocal(data);
+    }
+
+    function setModel(data: string) {
+      console.log(data);
+      actions.setModelName(data);
+      actions.updateModelControlsAsync();
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("command", onCommandEvent);
+    
+    socket.emit("getModel", setModel);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("command", onCommandEvent);
+    };
+  }, []);
 };

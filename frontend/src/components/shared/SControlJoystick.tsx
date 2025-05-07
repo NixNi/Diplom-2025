@@ -27,11 +27,6 @@ export default function SControlJoystic({ element }: SControlJoystic) {
               value: step,
               path: element.props.ypath,
             });
-            actions.sendModelCommandAsync({
-              command: "add",
-              value: step,
-              path: element.props.ypath,
-            });
             break;
           case "BACKWARD":
             actions.updateModelPositionLocal({
