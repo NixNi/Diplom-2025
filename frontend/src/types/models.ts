@@ -93,3 +93,16 @@ export interface ModelControls {
   };
   controlElements: Array<controlElement>;
 }
+
+export interface HardwareState {
+  isEnabled?: boolean;
+  isControlsEnabled?: boolean;
+  isEmergencyStoped?: boolean;
+}
+
+export interface CommandResponse {
+  command: "set" | "add";
+  path: string;
+  value: number;
+  isNeedOnlineCheck?: boolean;
+}

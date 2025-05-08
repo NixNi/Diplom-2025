@@ -1,14 +1,8 @@
 import { socket } from "../socket";
+import { CommandResponse, HardwareState } from "../types/models";
 import { useActions } from "./actions";
 import { useAppSelector } from "./redux";
 import { useEffect } from "react";
-
-interface CommandResponse {
-  command: "set" | "add";
-  path: string;
-  value: number;
-  isNeedOnlineCheck?: boolean;
-}
 
 export const useSocket = () => {
   const connectState = useAppSelector((state) => state.connect);
@@ -28,6 +22,10 @@ export const useSocket = () => {
       actions.updateModelPositionLocal(data);
     }
 
+    function onStateEvent(data: HardwareState) {
+      actions.updateState(data);
+    }
+
     function setModel(data: string) {
       console.log(data);
       actions.setModelName(data);
@@ -37,13 +35,14 @@ export const useSocket = () => {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("clientCommand", onCommandEvent);
-
+    socket.on("clientState", onStateEvent);
     socket.emit("getModel", connectState, setModel);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("clientCommand", onCommandEvent);
+      socket.off("clientState", onStateEvent);
     };
   }, []);
 };

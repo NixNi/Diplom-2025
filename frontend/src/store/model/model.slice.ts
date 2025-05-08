@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ModelControls, ModelPositions } from "../../types/models";
+import {
+  CommandResponse,
+  HardwareState,
+  ModelControls,
+  ModelPositions,
+} from "../../types/models";
 // import { sendCommand } from "../../hooks/socket";
-import { sendCommand } from "../../socket";
+import { sendCommand, sendState } from "../../socket";
 
 interface ModelState {
   id: number;
@@ -90,49 +95,11 @@ export const updateModelControlsAsync = createAsyncThunk(
   }
 );
 
-export const sendModelCommandAsync = createAsyncThunk(
-  "model/sendModelCommandAsync",
-  async (
-    command: { command: "set" | "add"; path: string; value: number },
-    { getState }
-  ) => {
-    const state = getState() as {
-      model: ModelState;
-      connect: { ip: string | null; port: number | null };
-    };
-    const { ip, port } = state.connect;
-    console.log(command);
-    if (!ip || !port) {
-      throw new Error("Connection details are missing");
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:8046/api/connect/command`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ command, connect: state.connect }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to send command: ${response.statusText}`);
-      }
-
-      return command;
-    } catch (error) {
-      throw new Error(`Error sending command: ${(error as Error).message}`);
-    }
-  }
-);
-
 export const modelSlice = createSlice({
   name: "model",
   initialState,
   reducers: {
+    //################_______OFFLINE MODE_______####################
     setModelName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
       state.modelControls = { models: {}, controlElements: [] };
@@ -144,21 +111,8 @@ export const modelSlice = createSlice({
       state.isErrorControls = false;
       state.errorMessage = null;
     },
-    switchEanbled: (state) => {
-      state.isEnabled = !state.isEnabled;
-      if (state.isEnabled) {
-        state.isControlsEnabled = true;
-        state.isEmergencyStoped = false;
-      }
-    },
     setMode: (state, action: PayloadAction<"online" | "offline">) => {
       state.mode = action.payload;
-    },
-    setControlsEnabled: (state, action: PayloadAction<boolean>) => {
-      state.isControlsEnabled = action.payload;
-    },
-    setEmergency: (state) => {
-      state.isEmergencyStoped = true;
     },
     resetModelState: (state) => {
       state.modelControls = { models: {}, controlElements: [] };
@@ -174,14 +128,63 @@ export const modelSlice = createSlice({
     updatePositionsLocal: (state, action: PayloadAction<ModelPositions>) => {
       state.positions = action.payload;
     },
+    updateState: (state, actions: PayloadAction<HardwareState>) => {
+      state.isControlsEnabled =
+        actions.payload.isControlsEnabled === undefined
+          ? state.isControlsEnabled
+          : actions.payload.isControlsEnabled;
+      state.isEmergencyStoped =
+        actions.payload.isEmergencyStoped === undefined
+          ? state.isEmergencyStoped
+          : actions.payload.isEmergencyStoped;
+      state.isEnabled =
+        actions.payload.isEnabled === undefined
+          ? state.isEnabled
+          : actions.payload.isEnabled;
+    },
+    //##############################################################
+    //#################_______ONLINE MODE_______####################
+    switchEanbled: (state) => {
+      const TemporaryState: HardwareState = {};
+      TemporaryState.isEnabled = !state.isEnabled;
+      if (TemporaryState.isEnabled) {
+        TemporaryState.isControlsEnabled = true;
+        TemporaryState.isEmergencyStoped = false;
+      }
+      if (state.mode === "online") {
+        sendState(TemporaryState);
+        return;
+      }
+      state.isEnabled = TemporaryState.isEnabled;
+      state.isControlsEnabled =
+        TemporaryState.isControlsEnabled === undefined
+          ? state.isControlsEnabled
+          : TemporaryState.isControlsEnabled;
+      state.isEmergencyStoped =
+        TemporaryState.isEmergencyStoped === undefined
+          ? state.isEmergencyStoped
+          : TemporaryState.isEmergencyStoped;
+    },
+
+    setControlsEnabled: (state, action: PayloadAction<boolean>) => {
+      if (state.mode === "online") {
+        sendState({ isControlsEnabled: action.payload });
+        return;
+      }
+      state.isControlsEnabled = action.payload;
+    },
+    setEmergency: (state) => {
+      if (state.mode === "online") {
+        console.log("abc");
+        sendState({ isEmergencyStoped: true });
+        return;
+      }
+      console.log("bdf");
+      state.isEmergencyStoped = true;
+    },
     updateModelPositionLocal: (
       state,
-      action: PayloadAction<{
-        command: "set" | "add";
-        path: string;
-        value: number;
-        isNeedOnlineCheck?: boolean;
-      }>
+      action: PayloadAction<CommandResponse>
     ) => {
       const { command, path, value, isNeedOnlineCheck = true } = action.payload;
       if (state.mode === "online" && isNeedOnlineCheck) {
@@ -221,6 +224,7 @@ export const modelSlice = createSlice({
         );
       }
     },
+    //##############################################################
   },
   extraReducers: (builder) => {
     builder
@@ -262,6 +266,5 @@ export const modelActions = {
   ...modelSlice.actions,
   updateModelControlsAsync,
   updateModelDataAsync,
-  sendModelCommandAsync,
 };
 export const modelReducer = modelSlice.reducer;

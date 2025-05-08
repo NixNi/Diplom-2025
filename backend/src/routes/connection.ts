@@ -1,6 +1,5 @@
 import express from "express";
 import errorHandler from "src/hooks/errorHandler";
-import { WsConnect } from "src/services/wsConnection";
 
 
 const connectionRouter = express.Router();

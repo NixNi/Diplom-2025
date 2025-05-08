@@ -13,9 +13,13 @@ export default function socketManager(socket: Socket) {
     value: number;
   }
   socket.on("command", (arg: CommandResponse) => {
-    // console.log(arg);
     socket.emit("command", arg);
     socket.broadcast.emit("command", arg);
+  });
+
+  socket.on("state", (arg) => {
+    socket.emit("state", arg);
+    socket.broadcast.emit("state", arg);
   });
 
   socket.on("disconnect", () => {

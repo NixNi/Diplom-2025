@@ -15,6 +15,9 @@ export default function socketManager(socket: Socket) {
         connection.on("command", (arg) => {
           socket.emit("clientCommand", arg);
         });
+        connection.on("state", (arg) => {
+          socket.emit("clientState", arg);
+        });
         connection.emit("getModel", callback);
       } catch (e) {
         console.error(e);
@@ -26,6 +29,12 @@ export default function socketManager(socket: Socket) {
   socket.on("clientCommand", (arg: CommandResponse) => {
     if (connection) {
       connection.emit("command", arg);
+    }
+  });
+
+  socket.on("clientState", (arg) => {
+    if (connection) {
+      connection.emit("state", arg);
     }
   });
 
