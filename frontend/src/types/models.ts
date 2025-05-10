@@ -37,17 +37,17 @@ export interface JoystickControlElement {
     ypath: string;
   };
 }
+
+export type ValuesArray = {
+  path: string;
+  value: number;
+}[];
 export interface SetButtonControlElement {
   name: string;
   element: "setButton";
   position: interfacePositions;
   props: {
-    values: [
-      {
-        path: string;
-        value: number;
-      }
-    ];
+    values: ValuesArray;
   };
 }
 export interface SArrowButtonsElement {
@@ -65,12 +65,7 @@ export interface SPowerButtonElement {
   element: "PowerButton";
   position: interfacePositions;
   props: {
-    defaultValues: [
-      {
-        path: string;
-        value: number;
-      }
-    ];
+    values: ValuesArray;
   };
 }
 

@@ -8,6 +8,7 @@ import type { Socket } from "socket.io";
 // import io from "./IO";
 const step = Number(process.env.step) || 0.1;
 const timeout = Number(process.env.timeout) || 100;
+let proccesses = 0;
 
 export async function runCommand(socket: Socket, commandObject: Command) {
   const { path, value, command } = commandObject;
@@ -58,8 +59,13 @@ export async function runCommand(socket: Socket, commandObject: Command) {
         socket.broadcast.emit("command", result);
       }
     } else {
+      setParameter("isControlsEnabled", 0);
+      socket.emit("state", { isControlsEnabled: 0 });
+      socket.broadcast.emit("state", { isControlsEnabled: 0 });
+      proccesses += 1;
       const intervalID = setInterval(async () => {
         const currentValue = (await getParameter(path)) || 0;
+        // console.log(path, currentValue, value);
         if (currentValue !== value) {
           if (currentValue > value) {
             const result = await setParameter(
@@ -69,7 +75,15 @@ export async function runCommand(socket: Socket, commandObject: Command) {
             if (result) {
               socket.emit("command", result);
               socket.broadcast.emit("command", result);
-            } else clearInterval(intervalID);
+            } else {
+              proccesses -= 1;
+              if (!proccesses) {
+                setParameter("isControlsEnabled", 1);
+                socket.emit("state", { isControlsEnabled: 1 });
+                socket.broadcast.emit("state", { isControlsEnabled: 1 });
+              }
+              clearInterval(intervalID);
+            }
           }
           if (currentValue < value) {
             const result = await setParameter(
@@ -79,9 +93,25 @@ export async function runCommand(socket: Socket, commandObject: Command) {
             if (result) {
               socket.emit("command", result);
               socket.broadcast.emit("command", result);
-            } else clearInterval(intervalID);
+            } else {
+              proccesses -= 1;
+              if (!proccesses) {
+                setParameter("isControlsEnabled", 1);
+                socket.emit("state", { isControlsEnabled: 1 });
+                socket.broadcast.emit("state", { isControlsEnabled: 1 });
+              }
+
+              clearInterval(intervalID);
+            }
           }
         } else {
+          proccesses -= 1;
+          if (!proccesses) {
+            setParameter("isControlsEnabled", 1);
+            socket.emit("state", { isControlsEnabled: 1 });
+            socket.broadcast.emit("state", { isControlsEnabled: 1 });
+          }
+
           clearInterval(intervalID);
         }
       }, timeout);
@@ -108,3 +138,5 @@ export async function setState(socket: Socket, commandObject: HardwareState) {
   socket.emit("state", commandObject);
   socket.broadcast.emit("state", commandObject);
 }
+
+//TODO: add emergency stop support

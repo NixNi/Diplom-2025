@@ -137,7 +137,7 @@
       "element": "PowerButton",
       "position": "TopLeft",
       "props": {
-        "defaultValues": [
+        "values": [
           {
             "path": "Основание_Рентгена/position/z",
             "value": 0

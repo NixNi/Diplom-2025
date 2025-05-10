@@ -19,45 +19,54 @@ export default function SPowerButton({ element }: SPowerButton) {
   useEffect(() => {
     let intervalId: number;
     if (clicked && model.isEnabled && !model.isEmergencyStoped) {
-      actions.setControlsEnabled(false);
-      intervalId = setInterval(() => {
-        let ended = true;
-        element.props.defaultValues.forEach((it) => {
-          let currentValue: any = positions;
-          const path_spl = it.path.split("/");
-          for (let i = 0; i < path_spl.length - 1; i++) {
-            const key = path_spl[i];
-            if (!currentValue[key]) {
-              currentValue[key] = {};
+      if (model.mode === "online") {
+        actions.updateSetModelPositionOnline(element.props.values);
+        actions.switchEanbled();
+        actions.setControlsEnabled(true);
+        setClicked(false);
+      } else {
+        actions.setControlsEnabled(false);
+        intervalId = setInterval(() => {
+          let ended = true;
+          element.props.values.forEach((it) => {
+            let currentValue: any = positions;
+            const path_spl = it.path.split("/");
+            for (let i = 0; i < path_spl.length - 1; i++) {
+              const key = path_spl[i];
+              if (!currentValue[key]) {
+                currentValue[key] = {};
+              }
+              currentValue = currentValue[key];
             }
-            currentValue = currentValue[key];
-          }
-          currentValue = currentValue[path_spl[path_spl.length - 1]] as number;
+            currentValue = currentValue[
+              path_spl[path_spl.length - 1]
+            ] as number;
 
-          if (currentValue !== undefined && currentValue !== it.value) {
-            ended = false;
-            if (currentValue > it.value) {
-              actions.updateModelPositionLocal({
-                command: "set",
-                value: Math.max(currentValue - step, it.value),
-                path: it.path,
-              });
+            if (currentValue !== undefined && currentValue !== it.value) {
+              ended = false;
+              if (currentValue > it.value) {
+                actions.updateModelPositionLocal({
+                  command: "set",
+                  value: Math.max(currentValue - step, it.value),
+                  path: it.path,
+                });
+              }
+              if (currentValue < it.value) {
+                actions.updateModelPositionLocal({
+                  command: "set",
+                  value: Math.min(currentValue + step, it.value),
+                  path: it.path,
+                });
+              }
             }
-            if (currentValue < it.value) {
-              actions.updateModelPositionLocal({
-                command: "set",
-                value: Math.min(currentValue + step, it.value),
-                path: it.path,
-              });
-            }
+          });
+          if (ended) {
+            actions.switchEanbled();
+            actions.setControlsEnabled(true);
+            setClicked(false);
           }
-        });
-        if (ended) {
-          actions.switchEanbled();
-          actions.setControlsEnabled(true);
-          setClicked(false);
-        }
-      }, 100);
+        }, 100);
+      }
     } else if (clicked) {
       actions.switchEanbled();
       setClicked(false);

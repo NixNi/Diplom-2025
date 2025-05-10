@@ -4,9 +4,11 @@ import {
   HardwareState,
   ModelControls,
   ModelPositions,
+  ValuesArray,
 } from "../../types/models";
 // import { sendCommand } from "../../hooks/socket";
 import { sendCommand, sendState } from "../../socket";
+
 
 interface ModelState {
   id: number;
@@ -178,6 +180,22 @@ export const modelSlice = createSlice({
 
         const lastKey = path_spl[path_spl.length - 1];
         current[lastKey] = item.Value;
+      }
+    },
+    updateSetModelPositionOnline: (
+      state,
+      action: PayloadAction<ValuesArray>
+    ) => {
+      if (state.mode === "online") {
+        for (let valPath of action.payload) {
+          const command: CommandResponse = {
+            command: "set",
+            path: valPath.path,
+            value: valPath.value,
+          };
+          sendCommand(command);
+        }
+        return;
       }
     },
     switchEanbled: (state) => {

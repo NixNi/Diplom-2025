@@ -1,11 +1,11 @@
 {
-  "Основание_Рентгена/position/z": { "min": -10, "max": 10 },
-  "Стол/position/z": { "min": -5, "max": 5 },
-  "Вертикальная_каретка/position/y": { "min": 0, "max": 3 },
-  "Горизонтальная_ось_1/position/x": { "min": -2, "max": 2 },
-  "Горизонтальная_ось_1/rotation/x": { "min": 0, "max": 3.1416 },
-  "Горизонтальная_ось_2/rotation/x": { "min": -1.5708, "max": 1.5708 },
-  "Вертикальная_поверхность/position/y": { "min": 2, "max": 5 },
+  "Основание_Рентгена/position/z": { "min": -2.3, "max": 2.3 },
+  "Стол/position/z": { "min": -0.8, "max": 0.8 },
+  "Вертикальная_каретка/position/y": { "min": 0.6, "max": 2.1 },
+  "Горизонтальная_ось_1/position/x": { "min": -1.9, "max": -0.4 },
+  "Горизонтальная_ось_1/rotation/x": { "min": -3.1459, "max": 3.1459 },
+  "Горизонтальная_ось_2/rotation/x": { "min": -3.1459, "max": 3.1459 },
+  "Вертикальная_поверхность/position/y": { "min": 3, "max": 4 },
   "isControlsEnabled": { "min": 0, "max": 1 },
   "isEnabled": { "min": 0, "max": 1 },
   "isEmergencyStoped": { "min": 0, "max": 1 }
