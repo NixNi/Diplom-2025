@@ -1,4 +1,4 @@
-import db from "src/services/pool";
+import db from "src/services/SQLiteConnection";
 import model from "src/types/model";
 
 export async function getModelByName(modelName: string) {

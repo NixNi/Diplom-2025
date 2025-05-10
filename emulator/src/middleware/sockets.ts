@@ -1,25 +1,30 @@
 import { Socket } from "socket.io";
+import type { Command, HardwareState } from "../types/command";
+import { getAllParameters, setParameter } from "../models/parameters";
+import { runCommand, setState } from "../services/CommandProcess";
 
 export default function socketManager(socket: Socket) {
   console.log(`Client connected: ${socket.id}`);
 
   socket.on("getModel", (callback: (arg: string) => void) => {
-    console.log(callback);
-    callback("Xray 2");
-  });
-  interface CommandResponse {
-    command: "set" | "add";
-    path: string;
-    value: number;
-  }
-  socket.on("command", (arg: CommandResponse) => {
-    socket.emit("command", arg);
-    socket.broadcast.emit("command", arg);
+    callback(process.env.model || "Xray");
   });
 
-  socket.on("state", (arg) => {
-    socket.emit("state", arg);
-    socket.broadcast.emit("state", arg);
+  socket.on("getCurrentParameters", async () => {
+    const parameters = await getAllParameters();
+    socket.emit("setParameters", parameters);
+    socket.broadcast.emit("setParameters", parameters);
+  });
+
+  socket.on("command", (arg: Command) => {
+    // console.log(arg);
+    runCommand(socket, arg);
+  });
+
+  socket.on("state", (arg: HardwareState) => {
+    // socket.emit("state", arg);
+    // socket.broadcast.emit("state", arg);
+    setState(socket, arg);
   });
 
   socket.on("disconnect", () => {

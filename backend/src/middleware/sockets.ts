@@ -1,16 +1,23 @@
 import { Socket as SocketClient } from "socket.io-client";
 import { Socket } from "socket.io";
 import { WsConnect } from "src/services/wsConnection";
+import { Mutex } from "async-mutex";
+
+const mutex = new Mutex();
 
 export default function socketManager(socket: Socket) {
   console.log(`Client connected: ${socket.id}`);
   let connection: SocketClient | null = null;
-
   socket.on(
-    "getModel",
-    async (connect: Connection, callback: (arg: string) => void) => {
-      // console.log(connect);
+    "connectHardware",
+    async (connect: Connection, callback: () => void) => {
+      await mutex.waitForUnlock();
+      const release = await mutex.acquire();
       try {
+        if (connection) {
+          connection.disconnect();
+          connection = null;
+        }
         connection = await WsConnect(connect.ip, connect.port);
         connection.on("command", (arg) => {
           socket.emit("clientCommand", arg);
@@ -18,13 +25,33 @@ export default function socketManager(socket: Socket) {
         connection.on("state", (arg) => {
           socket.emit("clientState", arg);
         });
-        connection.emit("getModel", callback);
+        connection.on("setParameters", (arg) => {
+          console.log("df");
+          socket.emit("clientSetParameters", arg);
+        });
+        callback();
       } catch (e) {
         console.error(e);
         // TODO: Handle error propagation
+      } finally {
+        release();
       }
     }
   );
+
+  socket.on("getCurrentParameters", (callback: () => void) => {
+    // console.log("abc");
+    if (connection) {
+      connection.emit("getCurrentParameters", callback);
+    }
+  });
+
+  socket.on("getModel", (callback: () => void) => {
+    // console.log(connection);
+    if (connection) {
+      connection.emit("getModel", callback);
+    }
+  });
 
   socket.on("clientCommand", (arg: CommandResponse) => {
     if (connection) {

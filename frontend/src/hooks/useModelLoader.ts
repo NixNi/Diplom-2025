@@ -18,6 +18,7 @@ export const useModelLoader = (scene: THREE.Scene) => {
   const model = useAppSelector((state) => state.model);
   const isLoading = model.isLoadingData || model.isLoadingControls;
   const isError = model.isErrorData || model.isErrorControls;
+  const isOnline = model.mode === "online";
   const modelControls = model.modelControls;
   const positions = model.positions;
 
@@ -90,8 +91,7 @@ export const useModelLoader = (scene: THREE.Scene) => {
             };
           }
         });
-
-        actions.updatePositionsLocal(newPositions);
+        if (!isOnline) actions.updatePositionsLocal(newPositions);
       },
       (error) => {
         setErrorMessage("Error parsing model: " + error.message);

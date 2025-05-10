@@ -1,7 +1,11 @@
 import { io } from "socket.io-client";
 import { HardwareState } from "./types/models";
 const URL = "http://localhost:8046";
-export const socket = io(URL);
+const socket = io(URL);
+socket.on("connect", onConnect);
+socket.on("disconnect", onDisconnect);
+
+export default socket;
 
 export const sendCommand = async (command: {
   command: "set" | "add";
@@ -22,3 +26,11 @@ export const sendState = async (state: HardwareState) => {
     console.error("Socket is not connected");
   }
 };
+
+function onConnect() {
+  console.log("Connected to Socket.IO server");
+}
+
+function onDisconnect() {
+  console.log("Disconnected from Socket.IO server");
+}

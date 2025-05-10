@@ -1,0 +1,12 @@
+{
+  "Основание_Рентгена/position/z": { "min": -10, "max": 10 },
+  "Стол/position/z": { "min": -5, "max": 5 },
+  "Вертикальная_каретка/position/y": { "min": 0, "max": 3 },
+  "Горизонтальная_ось_1/position/x": { "min": -2, "max": 2 },
+  "Горизонтальная_ось_1/rotation/x": { "min": 0, "max": 3.1416 },
+  "Горизонтальная_ось_2/rotation/x": { "min": -1.5708, "max": 1.5708 },
+  "Вертикальная_поверхность/position/y": { "min": 2, "max": 5 },
+  "isControlsEnabled": { "min": 0, "max": 1 },
+  "isEnabled": { "min": 0, "max": 1 },
+  "isEmergencyStoped": { "min": 0, "max": 1 }
+}

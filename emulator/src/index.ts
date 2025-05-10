@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import socketManager from "./middleware/sockets";
+import { setIO } from "./services/IO";
 
 const app = express();
 const port = process.env.PORT || 12537;
@@ -14,13 +15,15 @@ const whitelist = ["http://localhost:8046", "http://localhost:8045"];
 const httpServer = createServer(app);
 
 // Настраиваем Socket.IO
-const io = new Server(httpServer, {
-  cors: {
-    origin: whitelist,
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+const io =
+  // setIO(httpServer, whitelist);
+  new Server(httpServer, {
+    cors: {
+      origin: whitelist,
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
+  });
 
 const corsOptions = {
   origin: (origin: any, callback: any) => {

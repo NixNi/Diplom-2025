@@ -144,6 +144,42 @@ export const modelSlice = createSlice({
     },
     //##############################################################
     //#################_______ONLINE MODE_______####################
+    updateParametersFromHardware: (
+      state,
+      action: PayloadAction<{ Parameter: string; Value: number }[]>
+    ) => {
+      const StatesArray = action.payload;
+      for (let item of StatesArray) {
+        console.log(item);
+        if (item.Parameter === "isEnabled") {
+          state.isEnabled = Boolean(item.Value);
+          // console.log(item.Value);
+          continue;
+        }
+        if (item.Parameter === "isEmergencyStoped") {
+          state.isEmergencyStoped = Boolean(item.Value);
+          continue;
+        }
+        if (item.Parameter === "isControlsEnabled") {
+          state.isControlsEnabled = Boolean(item.Value);
+          continue;
+        }
+        const path_spl = item.Parameter.split("/");
+        console.log(path_spl);
+        if (path_spl.length === 0) return;
+        let current: any = state.positions;
+        for (let i = 0; i < path_spl.length - 1; i++) {
+          const key = path_spl[i];
+          if (!current[key]) {
+            current[key] = {};
+          }
+          current = current[key];
+        }
+
+        const lastKey = path_spl[path_spl.length - 1];
+        current[lastKey] = item.Value;
+      }
+    },
     switchEanbled: (state) => {
       const TemporaryState: HardwareState = {};
       TemporaryState.isEnabled = !state.isEnabled;

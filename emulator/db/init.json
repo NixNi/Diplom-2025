@@ -1,0 +1,12 @@
+{
+  "Основание_Рентгена/position/z": 0,
+  "Стол/position/z": 0,
+  "Вертикальная_каретка/position/y": 1.87,
+  "Горизонтальная_ось_1/position/x": -0.63,
+  "Горизонтальная_ось_1/rotation/x": 1.5708,
+  "Горизонтальная_ось_2/rotation/x": 0,
+  "Вертикальная_поверхность/position/y": 3.9,
+  "isControlsEnabled": 1,
+  "isEnabled": 1,
+  "isEmergencyStoped": 0
+}
