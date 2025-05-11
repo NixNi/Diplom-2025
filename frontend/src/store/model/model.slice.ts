@@ -151,7 +151,6 @@ export const modelSlice = createSlice({
     ) => {
       const StatesArray = action.payload;
       for (let item of StatesArray) {
-        console.log(item);
         if (item.Parameter === "isEnabled") {
           state.isEnabled = Boolean(item.Value);
           // console.log(item.Value);
@@ -166,7 +165,6 @@ export const modelSlice = createSlice({
           continue;
         }
         const path_spl = item.Parameter.split("/");
-        console.log(path_spl);
         if (path_spl.length === 0) return;
         let current: any = state.positions;
         for (let i = 0; i < path_spl.length - 1; i++) {
@@ -228,11 +226,9 @@ export const modelSlice = createSlice({
     },
     setEmergency: (state) => {
       if (state.mode === "online") {
-        console.log("abc");
         sendState({ isEmergencyStoped: true });
         return;
       }
-      console.log("bdf");
       state.isEmergencyStoped = true;
     },
     updateModelPositionLocal: (

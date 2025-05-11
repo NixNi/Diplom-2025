@@ -6,14 +6,14 @@ import {
   updateModelByName,
   deleteModelByName,
   getAllModelNames,
-} from "../models/d3Model.model";
+} from "../models/models.model";
 import errorHandler from "src/hooks/errorHandler";
 
-const d3ModelRouter = express.Router();
+const modelsRouter = express.Router();
 const upload = multer();
 
 // Получение всех имен моделей с их ID
-d3ModelRouter.get("/", async (req, res) => {
+modelsRouter.get("/", async (req, res) => {
   await errorHandler(res, async () => {
     const models = await getAllModelNames();
     res.json({ status: "success", data: models });
@@ -21,7 +21,7 @@ d3ModelRouter.get("/", async (req, res) => {
 });
 
 // Получение модели по имени
-d3ModelRouter.get("/:modelName", async (req, res) => {
+modelsRouter.get("/:modelName", async (req, res) => {
   const modelName = req.params.modelName;
   await errorHandler(res, async () => {
     const model = await getModelByName(modelName);
@@ -31,11 +31,10 @@ d3ModelRouter.get("/:modelName", async (req, res) => {
 });
 
 // Добавление новой модели
-d3ModelRouter.post("/", upload.single("data"), async (req, res) => {
+modelsRouter.post("/", upload.single("data"), async (req, res) => {
   const { name } = req.body;
   if (!req.file?.buffer) throw new Error("Model is missing");
   const data = req.file.buffer; // Получаем бинарные данные из файла
-  // console.log(name, data);
   await errorHandler(res, async () => {
     await addModel(name, data);
     res.json({
@@ -46,7 +45,7 @@ d3ModelRouter.post("/", upload.single("data"), async (req, res) => {
 });
 
 // Обновление модели по имени
-d3ModelRouter.put("/:modelName", async (req, res) => {
+modelsRouter.put("/:modelName", async (req, res) => {
   const modelName = req.params.modelName;
   const { data } = req.body;
   await errorHandler(res, async () => {
@@ -59,7 +58,7 @@ d3ModelRouter.put("/:modelName", async (req, res) => {
 });
 
 // Удаление модели по имени
-d3ModelRouter.delete("/:modelName", async (req, res) => {
+modelsRouter.delete("/:modelName", async (req, res) => {
   const modelName = req.params.modelName;
   await errorHandler(res, async () => {
     await deleteModelByName(modelName);
@@ -70,4 +69,4 @@ d3ModelRouter.delete("/:modelName", async (req, res) => {
   });
 });
 
-export default d3ModelRouter;
+export default modelsRouter;

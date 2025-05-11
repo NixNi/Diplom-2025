@@ -51,7 +51,6 @@ export async function changeParameter(
 ): Promise<Command | null> {
   const currentValue = (await getParameter(parameter)) || 0;
   const limits = await getLimits(parameter);
-  console.log(currentValue, limits);
   const numValue = Number(value);
   if (isNaN(numValue)) {
     throw new Error(`Значение ${value} не является числом`);

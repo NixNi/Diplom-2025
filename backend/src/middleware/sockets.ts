@@ -26,7 +26,6 @@ export default function socketManager(socket: Socket) {
           socket.emit("clientState", arg);
         });
         connection.on("setParameters", (arg) => {
-          console.log("df");
           socket.emit("clientSetParameters", arg);
         });
         callback();
@@ -40,14 +39,12 @@ export default function socketManager(socket: Socket) {
   );
 
   socket.on("getCurrentParameters", (callback: () => void) => {
-    // console.log("abc");
     if (connection) {
       connection.emit("getCurrentParameters", callback);
     }
   });
 
   socket.on("getModel", (callback: () => void) => {
-    // console.log(connection);
     if (connection) {
       connection.emit("getModel", callback);
     }

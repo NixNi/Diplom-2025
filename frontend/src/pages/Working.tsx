@@ -11,13 +11,13 @@ export default function Working() {
   const connection = useAppSelector((state) => state.connect);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (!connection.ip) navigate("/connect");
-    else actions.setMode("online");
+    else {
+      actions.setMode("online");
+    }
   }, []);
   useSocket();
-
   return (
     <div>
       <ModelViewer modelControlsEnable>

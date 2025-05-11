@@ -4,3 +4,8 @@ export interface Connection {
   ip: string;
   port: string;
 }
+
+export interface Connect {
+  ip: string | null;
+  port: string | null;
+}

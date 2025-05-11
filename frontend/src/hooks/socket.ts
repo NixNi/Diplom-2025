@@ -25,7 +25,6 @@ export const useSocket = () => {
     }
 
     function setParameters(data: { Parameter: string; Value: number }[]) {
-      // console.log(data);
       actions.updateParametersFromHardware(data);
     }
 
@@ -37,7 +36,8 @@ export const useSocket = () => {
     socket.on("clientCommand", onCommandEvent);
     socket.on("clientState", onStateEvent);
     socket.on("clientSetParameters", setParameters);
-    socket.emit("connectHardware", connectState, onConnection);
+    if (connectState.ip && connectState.port)
+      socket.emit("connectHardware", connectState, onConnection);
 
     return () => {
       socket.off("clientCommand", onCommandEvent);

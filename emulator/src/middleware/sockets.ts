@@ -17,13 +17,10 @@ export default function socketManager(socket: Socket) {
   });
 
   socket.on("command", (arg: Command) => {
-    // console.log(arg);
     runCommand(socket, arg);
   });
 
   socket.on("state", (arg: HardwareState) => {
-    // socket.emit("state", arg);
-    // socket.broadcast.emit("state", arg);
     setState(socket, arg);
   });
 

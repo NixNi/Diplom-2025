@@ -27,8 +27,9 @@ export const useModelLoader = (scene: THREE.Scene) => {
       try {
         const result = await dispatch(updateModelDataAsync()).unwrap();
         setModelData(result);
-      } catch (error) {
-        console.error("Failed to load model data:", error);
+      } catch (error: any) {
+        if (error.message !== "Choose a model")
+          console.error("Failed to load model data:", error);
       }
     }
     modelLoad();

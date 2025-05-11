@@ -1,37 +1,69 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ServerResponse } from "../types/server"; // Предположим, что у вас есть тип ServerResponse
+import { ServerResponse } from "../types/server";
+import { Connection } from "../../types/connection";
 
 export const connectApi = createApi({
   reducerPath: "connect/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/connect", // Базовый URL для всех запросов
+    baseUrl: "/api/connect",
   }),
+  tagTypes: ["Connections"],
+  refetchOnMountOrArgChange: true,
   endpoints: (build) => ({
     addConnect: build.mutation<
       ServerResponse,
-      { ip: string; port: number; user?: string; password?: string }
+      { name: string; ip: string; port: string }
     >({
-      query: (connect) => {
-        return {
-          url: "/",
-          method: "POST",
-          body: connect,
-        };
-      },
+      query: (connect) => ({
+        url: "/",
+        method: "POST",
+        body: connect,
+      }),
+      invalidatesTags: ["Connections"],
     }),
-    ping: build.mutation<
-      ServerResponse,
-      { ip: string; port: number; user?: string; password?: string }
+    ping: build.mutation<ServerResponse, { ip: string; port: string }>({
+      query: (connect) => ({
+        url: "/ping",
+        method: "POST",
+        body: connect,
+      }),
+      invalidatesTags: ["Connections"],
+    }),
+    getConnectionsPaginated: build.query<
+      ServerResponse & { data: Connection[] },
+      { page: number; perPage: number }
     >({
-      query: (connect) => {
-        return {
-          url: "/ping",
-          method: "POST",
-          body: connect,
-        };
-      },
+      query: ({ page, perPage }) => ({
+        url: `/?page=${page}&perPage=${perPage}`,
+        method: "GET",
+      }),
+      providesTags: ["Connections"],
+    }),
+    updateConnectionById: build.mutation<
+      ServerResponse,
+      { id: number; name: string; ip: string; port: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Connections"],
+    }),
+    deleteConnectionById: build.mutation<ServerResponse, { id: number }>({
+      query: ({ id }) => ({
+        url: `/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Connections"],
     }),
   }),
 });
 
-export const { useAddConnectMutation, usePingMutation } = connectApi;
+export const {
+  useAddConnectMutation,
+  usePingMutation,
+  useGetConnectionsPaginatedQuery,
+  useUpdateConnectionByIdMutation,
+  useDeleteConnectionByIdMutation,
+} = connectApi;

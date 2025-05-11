@@ -12,13 +12,12 @@ export function WsConnect(ip: string, port: number) {
 
     serverSocket.on("connect_error", (err) => {
       serverSocket.disconnect();
+      console.log(url);
       reject(new Error("Server Not Connected"));
     });
 
     serverSocket.on("disconnect", () => {
       console.log("Disconnected from Emulator");
     });
-
-    
   });
 }

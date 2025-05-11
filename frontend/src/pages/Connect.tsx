@@ -7,6 +7,8 @@ import {
 import "./css/Connect.css";
 import SPopUp from "../components/shared/SPopUp";
 import { useNavigate } from "react-router";
+import ConnecitonList from "../components/ConnecitonList";
+import AddIcon from "../icons/svg/add.svg?react";
 
 export default function Connect() {
   const defaultPort = 12537;
@@ -20,17 +22,21 @@ export default function Connect() {
   const [ping] = usePingMutation();
   const [addConnect] = useAddConnectMutation();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (
+    setError: (err: string) => void,
+    { ipIn, portIn }: { ipIn?: string; portIn?: string }
+  ) => {
     try {
       const connectionData = {
-        ip,
-        port: Number(port) || defaultPort,
+        name: (ipIn || ip) + ":" + String(portIn || port || defaultPort),
+        ip: ipIn || ip,
+        port: String(portIn || port || defaultPort),
       };
       actions.setConnect(connectionData);
       ping(connectionData).then((it) => {
         if (it.error) {
           const error = it.error as any;
-          setErrorMessage(error.data.status + ": " + error.data.message);
+          setError(error.data.status + ": " + error.data.message);
         } else {
           addConnect(connectionData);
           navigate("./..");
@@ -44,10 +50,11 @@ export default function Connect() {
   return (
     <div className="connect">
       <div className="add-connection" onClick={() => setPopup(true)}>
+        <AddIcon />
         Подключится к аппарату
       </div>
 
-      <div className="list-container"></div>
+      <ConnecitonList handleSubmit={handleSubmit} />
       <SPopUp setVisibility={setPopup} visibility={popup}>
         <div>
           <div className="flex gap-4">
@@ -61,9 +68,10 @@ export default function Connect() {
                 placeholder="localhost"
               />
             </label>
-            <label htmlFor="ipInput">
-              <p>PORT</p>
+            <label htmlFor="portInput">
+              <p className="ml-2">PORT</p>
               <input
+                id="portInput"
                 type="text"
                 value={port}
                 onChange={(e) => setPort(e.target.value)}
@@ -71,7 +79,10 @@ export default function Connect() {
               />
             </label>
 
-            <div onClick={handleSubmit} className="btn">
+            <div
+              onClick={handleSubmit.bind({}, setErrorMessage, {})}
+              className="btn"
+            >
               Подключится
             </div>
           </div>

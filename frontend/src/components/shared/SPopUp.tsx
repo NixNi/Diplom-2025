@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactElement, useEffect, useState } from "react";
+import { HTMLAttributes } from "react";
 import "./css/SPopUp.css";
 
 interface SPopUPprops extends HTMLAttributes<HTMLDivElement> {
@@ -17,7 +17,6 @@ const SPopUp = ({
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     vis: boolean
   ) => {
-    console.log("abcdse");
     e.preventDefault();
     e.stopPropagation();
     setVisibility(vis);

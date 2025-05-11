@@ -5,9 +5,9 @@ import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-import d3ModelRouter from "./routes/d3Model";
-import modelData from "./routes/modelsData";
-import connectionRouter from "./routes/connection";
+import modelsRouter from "./routes/models";
+import settingsRouter from "./routes/settings";
+import connectionsRouter from "./routes/connections";
 import socketManager from "./middleware/sockets";
 
 const app = express();
@@ -49,9 +49,9 @@ app.get("/", (request, response) => {
   response.send("It is working api, you check manually");
 });
 
-app.use("/api/models", d3ModelRouter);
-app.use("/api/json", modelData);
-app.use("/api/connect", connectionRouter);
+app.use("/api/models", modelsRouter);
+app.use("/api/json", settingsRouter);
+app.use("/api/connect", connectionsRouter);
 
 io.on("connection", socketManager);
 
