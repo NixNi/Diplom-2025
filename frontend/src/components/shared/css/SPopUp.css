@@ -1,0 +1,21 @@
+.PopUp {
+  background-color: var(--light-background);
+  /* border: 1px solid var(--text); */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow:  2px 2px 0px #ffffff60 inset, -2px -2px 0px #ffffff15 inset;
+}
+
+.PopUp-Background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #00000060;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

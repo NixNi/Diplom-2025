@@ -9,7 +9,6 @@ import {
 // import { sendCommand } from "../../hooks/socket";
 import { sendCommand, sendState } from "../../socket";
 
-
 interface ModelState {
   id: number;
   name: string;

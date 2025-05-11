@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function Navigation() {
   return (
@@ -11,7 +11,7 @@ export default function Navigation() {
           to="/Settings"
           className="color-zinc-2 no-underline hover:color-emerald-2"
         >
-         Настройки
+          Настройки
         </Link>
         <Link
           to="/"
@@ -20,10 +20,10 @@ export default function Navigation() {
           Дом
         </Link>
         <Link
-          to="/login"
+          to="/connect"
           className="color-zinc-2 no-underline hover:color-emerald-2"
         >
-          Вход
+          Подключение
         </Link>
       </div>
     </nav>

@@ -5,7 +5,7 @@
 }
 .add-connection {
   font-size: 20px;
-  padding: 20px;
+  padding: 13px 20px;
   margin: auto;
   margin-top: 30px;
   background-color: var(--secondary);
@@ -14,4 +14,37 @@
 }
 .add-connection:hover {
   background-color: var(--secondary-hover);
+}
+
+.PopUp input {
+  color: var(--text);
+  padding: 5px;
+  background-color: var(--background);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.PopUp .btn {
+  cursor: pointer;
+  color: var(--text);
+  padding: 5px;
+  background-color: var(--secondary);
+  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: -2px -2px 0px #00000060 inset;
+  user-select: none;
+}
+
+.PopUp .btn:active {
+  box-shadow: 2px 2px 0px #00000060 inset;
+  background-color: var(--secondary-hover);
+}
+
+.error {
+  color: var(--warning);
+  margin-top: 12px;
+  max-width: 427px;
 }

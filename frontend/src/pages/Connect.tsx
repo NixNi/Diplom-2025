@@ -1,47 +1,41 @@
 import { useState } from "react";
 import { useActions } from "../hooks/actions";
-import { useAddConnectMutation } from "../store/connect/connect.api";
+import {
+  useAddConnectMutation,
+  usePingMutation,
+} from "../store/connect/connect.api";
 import "./css/Connect.css";
+import SPopUp from "../components/shared/SPopUp";
+import { useNavigate } from "react-router";
 
 export default function Connect() {
+  const defaultPort = 12537;
+  const navigate = useNavigate();
   const [ip, setIp] = useState<string>("");
   const [port, setPort] = useState<string>("");
-  const [user, setUser] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [popup, setPopup] = useState<boolean>(false);
 
-  const { setConnect } = useActions();
+  const actions = useActions();
+  const [ping] = usePingMutation();
   const [addConnect] = useAddConnectMutation();
-
-  const handleInputChange = (field: string, value: string) => {
-    switch (field) {
-      case "ip":
-        setIp(value);
-        setConnect({ ip: value, port: Number(port), user, password });
-        break;
-      case "port":
-        setPort(value);
-        setConnect({ ip, port: Number(value), user, password });
-        break;
-      case "user":
-        setUser(value);
-        setConnect({ ip, port: Number(port), user: value, password });
-        break;
-      case "password":
-        setPassword(value);
-        setConnect({ ip, port: Number(port), user, password: value });
-        break;
-    }
-  };
 
   const handleSubmit = async () => {
     try {
       const connectionData = {
         ip,
-        port: Number(port),
-        ...(user && { user }),
-        ...(password && { password }),
+        port: Number(port) || defaultPort,
       };
-      await addConnect(connectionData).unwrap();
+      actions.setConnect(connectionData);
+      ping(connectionData).then((it) => {
+        if (it.error) {
+          const error = it.error as any;
+          setErrorMessage(error.data.status + ": " + error.data.message);
+        } else {
+          addConnect(connectionData);
+          navigate("./..");
+        }
+      });
     } catch (error) {
       console.error("Ошибка при подключении:", error);
     }
@@ -49,36 +43,41 @@ export default function Connect() {
 
   return (
     <div className="connect">
-      <div className="add-connection" onClick={handleSubmit}>
+      <div className="add-connection" onClick={() => setPopup(true)}>
         Подключится к аппарату
       </div>
-      <div>
-        ip
-        <input
-          type="text"
-          value={ip}
-          onChange={(e) => handleInputChange("ip", e.target.value)}
-        />
-        port
-        <input
-          type="text"
-          value={port}
-          onChange={(e) => handleInputChange("port", e.target.value)}
-        />
-        user
-        <input
-          type="text"
-          value={user}
-          onChange={(e) => handleInputChange("user", e.target.value)}
-        />
-        password
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => handleInputChange("password", e.target.value)}
-        />
-      </div>
+
       <div className="list-container"></div>
+      <SPopUp setVisibility={setPopup} visibility={popup}>
+        <div>
+          <div className="flex gap-4">
+            <label htmlFor="ipInput">
+              <p className="ml-2">IP</p>
+              <input
+                id="ipInput"
+                type="text"
+                value={ip}
+                onChange={(e) => setIp(e.target.value)}
+                placeholder="localhost"
+              />
+            </label>
+            <label htmlFor="ipInput">
+              <p>PORT</p>
+              <input
+                type="text"
+                value={port}
+                onChange={(e) => setPort(e.target.value)}
+                placeholder={String(defaultPort)}
+              />
+            </label>
+
+            <div onClick={handleSubmit} className="btn">
+              Подключится
+            </div>
+          </div>
+          {errorMessage && <p className="error">{errorMessage}</p>}
+        </div>
+      </SPopUp>
     </div>
   );
 }

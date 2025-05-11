@@ -1,10 +1,8 @@
-import { Route, Routes, } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Settings from "./pages/Settings";
 import Connect from "./pages/Connect";
 import Working from "./pages/Working";
-
-
 
 function App() {
   return (

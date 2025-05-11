@@ -52,6 +52,9 @@ middleware.forEach((it) => app.use(it));
 app.get("/", (request, response) => {
   response.send("It is working api, you check manually");
 });
+app.get("/ping", (request, response) => {
+  response.send("pong");
+});
 
 // Обработка подключений Socket.IO
 io.on("connection", socketManager);

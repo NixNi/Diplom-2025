@@ -1,25 +1,11 @@
 import express from "express";
 import errorHandler from "src/hooks/errorHandler";
 
-
 const connectionRouter = express.Router();
-
-// // Получение всех имен моделей с их ID
-// connectionRouter.get("/", async (req, res) => {
-//   await errorHandler(res, async () => {
-//     console.log(req.params)
-//     res.json({
-//       status: "success",
-//       message: `Data set succesfully`,
-//     });
-//   });
-// });
-
-
 
 // Добавление новой модели
 connectionRouter.post("/", async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body);
   await errorHandler(res, async () => {
     // WsConnect(req.body.ip, req.body.port)
     res.json({
@@ -30,16 +16,23 @@ connectionRouter.post("/", async (req, res) => {
 });
 
 // Добавление новой модели
-connectionRouter.post("/command", async (req, res) => {
-  console.log(req.body)
-  await errorHandler(res, async () => {
-    // WsConnect(req.body.ip, req.body.port)
+connectionRouter.post("/ping", async (req, res) => {
+  // console.log(req.body);
+  try {
+    const url = `http://${req.body.ip}:${req.body.port}`;
+    const response = await fetch(`${url}/ping`);
+    if (response.status == 200)
+      res.json({
+        status: "success",
+        message: `pong`,
+      });
+  } catch (e: any) {
+    res.status(502);
     res.json({
-      status: "success",
-      message: `Model data added successfully`,
+      status: "Bad Gateway",
+      message: e?.message,
     });
-  });
+  }
 });
-
 
 export default connectionRouter;
