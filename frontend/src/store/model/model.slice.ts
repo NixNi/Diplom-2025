@@ -52,10 +52,7 @@ export const updateModelDataAsync = createAsyncThunk<ArrayBuffer, void>(
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8046/api/models/${modelName}`,
-        { signal }
-      );
+      const response = await fetch(`/api/models/${modelName}`, { signal });
       if (!response.ok) {
         throw new Error(`Failed to fetch model data: ${response.statusText}`);
       }
@@ -77,10 +74,7 @@ export const updateModelControlsAsync = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8046/api/json/${modelName}`,
-        { signal }
-      );
+      const response = await fetch(`/api/json/${modelName}`, { signal });
       if (!response.ok) {
         throw new Error(
           `Failed to fetch model controls: ${response.statusText}`
@@ -116,6 +110,11 @@ export const modelSlice = createSlice({
     },
     setMode: (state, action: PayloadAction<"online" | "offline">) => {
       state.mode = action.payload;
+    },
+    resetErrors: (state) => {
+      state.isErrorControls = false;
+      state.isErrorData = false;
+      state.errorMessage = null;
     },
     resetModelState: (state) => {
       state.modelControls = { models: {}, controlElements: [] };

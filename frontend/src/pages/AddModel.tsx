@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAddModelMutation } from "../store/model/model.api";
 import ModelPreview from "../components/ModelPreview";
 import { useActions } from "../hooks/actions";
+import SettingsViewer from "../components/SettingsViewer";
 
 const AddModel = () => {
   //TODO: Fix model loading after error
@@ -10,6 +11,8 @@ const AddModel = () => {
   const [settingsFile, setSettingsFile] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [internalError, setInternalError] = useState<string | null>(null);
+  const [inputFileKey, setInputFileKey] = useState<number>(Date.now());
+  const [inputSettingsKey, setInputSettingsKey] = useState<number>(Date.now());
   const [addModel, { isLoading }] = useAddModelMutation();
   const actions = useActions();
 
@@ -59,7 +62,11 @@ const AddModel = () => {
         data: modelFile,
         settings: settingsFile,
       }).unwrap();
-      // navigate("/"); // Перенаправляем на главную страницу после успешной загрузки
+      setModelName("");
+      setModelFile(null);
+      setSettingsFile(null);
+      setInputFileKey(Date.now());
+      setInputSettingsKey(Date.now());
     } catch (error) {
       setErrorMessage("Ошибка при загрузке модели.");
     }
@@ -87,6 +94,7 @@ const AddModel = () => {
           </label>
           <input
             type="file"
+            key={inputFileKey}
             onChange={handleFileChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             accept=".glb"
@@ -99,6 +107,7 @@ const AddModel = () => {
           </label>
           <input
             type="file"
+            key={inputSettingsKey}
             onChange={handleFileChange2}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             accept=".json"
@@ -116,14 +125,19 @@ const AddModel = () => {
           {isLoading ? "Загрузка..." : "Добавить модель"}
         </button>
       </form>
-      {modelFile && (
-        <div>
-          <label className="block text-sm font-medium text-gray-300">
-            Предпросмотр модели
-          </label>
-          <ModelPreview model={modelFile} setExternalError={setInternalError} />
-        </div>
-      )}
+      <div>
+        <label className="block text-sm font-medium text-gray-300">
+          Предпросмотр настроек управления
+        </label>
+        <SettingsViewer settings={settingsFile} />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-300">
+          Предпросмотр модели
+        </label>
+        <ModelPreview model={modelFile} setExternalError={setInternalError} />
+      </div>
     </div>
   );
 };

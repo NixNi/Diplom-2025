@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { useUpdateModelByNameMutation } from "../store/model/model.api";
+import {
+  useDeleteModelByNameMutation,
+  useUpdateModelByNameMutation,
+} from "../store/model/model.api";
 import ModelPreview from "../components/ModelPreview";
 import SLSelect from "../components/shared/SLSelect";
 import { useActions } from "../hooks/actions";
 import { useGetAllModelNamesQuery } from "../store/model/model.api";
+import SettingsViewer from "../components/SettingsViewer";
 
 const EditModel = () => {
-  //TODO: Fix model loading after error
   const [modelName, setModelName] = useState("");
   const [modelFile, setModelFile] = useState<ArrayBuffer | null>(null);
   const [settingsFile, setSettingsFile] = useState<string | null>(null);
@@ -15,8 +18,9 @@ const EditModel = () => {
   const [updateModel] = useUpdateModelByNameMutation();
   const [inputFileKey, setInputFileKey] = useState<number>(Date.now());
   const [inputSettingsKey, setInputSettingsKey] = useState<number>(Date.now());
+  const [selectKey, setSelectKey] = useState<number>(Date.now());
   const actions = useActions();
-
+  const [deleteModel] = useDeleteModelByNameMutation();
   const [modelOptions, setModelOptions] = useState<
     Array<{ value: string; name: string; disable?: boolean }>
   >([]);
@@ -75,16 +79,15 @@ const EditModel = () => {
       return;
     }
     try {
-      console.log({
-        name: modelName,
-        data: modelFile,
-        settings: settingsFile,
-      });
       await updateModel({
         name: modelName,
         data: modelFile,
         settings: settingsFile,
       }).unwrap();
+      setModelFile(null);
+      setSettingsFile(null);
+      setInputFileKey(Date.now());
+      setInputSettingsKey(Date.now());
     } catch (error) {
       setErrorMessage("Ошибка при загрузке модели.");
     }
@@ -99,6 +102,7 @@ const EditModel = () => {
             Название модели
           </label>
           <SLSelect
+            key={selectKey}
             className=""
             name="modelName"
             onChange={async (e) => {
@@ -168,13 +172,21 @@ const EditModel = () => {
             setSettingsFile(null);
             setInputFileKey(Date.now());
             setInputSettingsKey(Date.now());
+            setSelectKey(Date.now());
+            actions.resetModelState();
+            deleteModel(modelName);
           }}
           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md warning-hover color-black"
         >
           Удалить
         </button>
       </form>
-
+      <div>
+        <label className="block text-sm font-medium text-gray-300">
+          Предпросмотр настроек управления
+        </label>
+        <SettingsViewer settings={settingsFile} />
+      </div>
       <div>
         <label className="block text-sm font-medium text-gray-300">
           Предпросмотр модели

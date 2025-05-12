@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ServerDataResponse, ServerResponse } from "../types/server"; // Предположим, что у вас есть тип ServerResponse
+import { ServerDataResponse, ServerResponse } from "../types/server";
 
 export const modelApi = createApi({
   reducerPath: "model/api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "/api/models", // Базовый URL для всех запросов
+    baseUrl: "/api/models",
   }),
+  tagTypes: ["Models"],
   endpoints: (build) => ({
     getAllModelNames: build.query<
       ServerDataResponse<{ id: number; name: string }[]>,
@@ -14,6 +15,7 @@ export const modelApi = createApi({
       query: () => ({
         url: "/",
       }),
+      providesTags: ["Models"],
     }),
 
     addModel: build.mutation<
@@ -35,6 +37,7 @@ export const modelApi = createApi({
           body: formData,
         };
       },
+      invalidatesTags: ["Models"],
     }),
 
     updateModelByName: build.mutation<
@@ -56,6 +59,7 @@ export const modelApi = createApi({
           body: formData,
         };
       },
+      invalidatesTags: ["Models"],
     }),
 
     deleteModelByName: build.mutation<ServerResponse, string>({
@@ -63,6 +67,7 @@ export const modelApi = createApi({
         url: `/${modelName}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Models"],
     }),
   }),
 });

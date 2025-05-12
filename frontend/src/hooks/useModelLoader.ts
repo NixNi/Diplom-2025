@@ -35,8 +35,10 @@ export const useModelLoader = (
           console.error("Failed to load model data:", error);
       }
     }
-    if (modelPassed) setModelData(modelPassed);
-    else modelLoad();
+    if (modelPassed) {
+      actions.resetErrors();
+      setModelData(modelPassed);
+    } else modelLoad();
   }, [model.name, modelPassed]);
 
   useEffect(() => {
