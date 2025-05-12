@@ -3,6 +3,7 @@ import Navigation from "./components/Navigation";
 import Settings from "./pages/Settings";
 import Connect from "./pages/Connect";
 import Working from "./pages/Working";
+import AddModel from "./pages/AddModel";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
           {/* <Route path="/" element={<Viewer />} /> */}
           <Route path="/settings" element={<Settings />} />
           <Route path="/connect" element={<Connect />} />
-          <Route path="/" element={<Working />} />
+          <Route path="/" element={<AddModel />} />
         </Routes>
       </div>
     </div>

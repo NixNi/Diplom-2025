@@ -7,14 +7,16 @@ import { xyz, ModelPositions } from "../types/models";
 import { updateModelDataAsync } from "../store/model/model.slice";
 import { useActions } from "./actions";
 
-export const useModelLoader = (scene: THREE.Scene) => {
+export const useModelLoader = (
+  scene: THREE.Scene,
+  { model: modelPassed }: { model?: ArrayBuffer } = {}
+) => {
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [modelData, setModelData] = useState<ArrayBuffer | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modelLoaded, setModelLoaded] = useState(false);
   const dispatch = useAppDispatch();
   const actions = useActions();
-
   const model = useAppSelector((state) => state.model);
   const isLoading = model.isLoadingData || model.isLoadingControls;
   const isError = model.isErrorData || model.isErrorControls;
@@ -23,6 +25,7 @@ export const useModelLoader = (scene: THREE.Scene) => {
   const positions = model.positions;
 
   useEffect(() => {
+    setErrorMessage(null);
     async function modelLoad() {
       try {
         const result = await dispatch(updateModelDataAsync()).unwrap();
@@ -32,8 +35,9 @@ export const useModelLoader = (scene: THREE.Scene) => {
           console.error("Failed to load model data:", error);
       }
     }
-    modelLoad();
-  }, [model.name]);
+    if (modelPassed) setModelData(modelPassed);
+    else modelLoad();
+  }, [model.name, modelPassed]);
 
   useEffect(() => {
     setModelLoaded(false);
@@ -49,6 +53,7 @@ export const useModelLoader = (scene: THREE.Scene) => {
       modelData,
       "",
       (gltf) => {
+        // console.log(gltf);
         if (modelRef.current) {
           scene.remove(modelRef.current);
           modelRef.current = null;

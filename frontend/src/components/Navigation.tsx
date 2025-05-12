@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Navigation() {
   return (
-    <nav className="fixed flex justify-between items-center h-[20px] px-4 py-6 w-full secondary">
+    <nav className="fixed flex justify-between items-center h-[20px] px-4 py-6 w-full secondary z-10">
       <Link to="/" className="color-zinc-2 no-underline">
         <h2>Рентген</h2>
       </Link>
