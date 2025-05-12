@@ -32,11 +32,12 @@ modelsRouter.get("/:modelName", async (req, res) => {
 
 // Добавление новой модели
 modelsRouter.post("/", upload.single("data"), async (req, res) => {
-  const { name } = req.body;
-  if (!req.file?.buffer) throw new Error("Model is missing");
-  const data = req.file.buffer; // Получаем бинарные данные из файла
+  const { name, settings } = req.body;
+
   await errorHandler(res, async () => {
-    await addModel(name, data);
+    if (!req.file?.buffer) throw new Error("Model is missing");
+    const data = req.file.buffer; // Получаем бинарные данные из файла
+    await addModel(name, data, settings);
     res.json({
       status: "success",
       message: `Model ${name} added successfully`,
@@ -44,15 +45,16 @@ modelsRouter.post("/", upload.single("data"), async (req, res) => {
   });
 });
 
-// Обновление модели по имени
-modelsRouter.put("/:modelName", async (req, res) => {
-  const modelName = req.params.modelName;
-  const { data } = req.body;
+modelsRouter.put("/:modelName", upload.single("data"), async (req, res) => {
+  const { name, settings } = req.body;
+
   await errorHandler(res, async () => {
-    await updateModelByName(modelName, data);
+    // if (!req.file?.buffer) throw new Error("Model is missing");
+    const data = req.file?.buffer; // Получаем бинарные данные из файла
+    await updateModelByName(name, { newData: data, settings });
     res.json({
       status: "success",
-      message: `Model ${modelName} updated successfully`,
+      message: `Model ${name} updated successfully`,
     });
   });
 });

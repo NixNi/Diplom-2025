@@ -9,15 +9,10 @@ export default function initDB() {
     CREATE TABLE IF NOT EXISTS models (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL UNIQUE,
+            settings TEXT NOT NULL,
             data BLOB NOT NULL
         );
   `);
-
-  db.run(`CREATE TABLE IF NOT EXISTS settings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
-            data TEXT NOT NULL
-        );`);
 
   db.run(`CREATE TABLE IF NOT EXISTS connections (
           id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -9,14 +9,45 @@ export async function getModelByName(modelName: string) {
   return modelData;
 }
 
-export async function addModel(name: string, data: Buffer) {
-  const query = db.query(`INSERT INTO models (name, data) VALUES (?, ?)`);
-  query.run(name, data);
+export async function addModel(name: string, data: Buffer, settings: string) {
+  const query = db.query(
+    `INSERT INTO models (name, data, settings) VALUES (?, ?, ?)`
+  );
+  query.run(name, data, settings);
 }
 
-export async function updateModelByName(modelName: string, newData: Buffer) {
-  const query = db.query(`UPDATE models SET data = ? WHERE name = ?`);
-  query.run(newData, modelName);
+export async function updateModelByName(
+  modelName: string,
+  options: {
+    newData?: Buffer;
+    settings?: string;
+  }
+) {
+  // Если не передано ни одного параметра для обновления - ничего не делаем
+  if (!options.newData && !options.settings) {
+    return;
+  }
+
+  const updateParts: string[] = [];
+  const params: (Buffer | string)[] = [];
+
+  if (options.newData) {
+    updateParts.push("data = ?");
+    params.push(options.newData);
+  }
+
+  if (options.settings) {
+    updateParts.push("settings = ?");
+    params.push(options.settings);
+  }
+
+  // Добавляем modelName в конец массива параметров для условия WHERE
+  params.push(modelName);
+
+  const query = db.query(
+    `UPDATE models SET ${updateParts.join(", ")} WHERE name = ?`
+  );
+  query.run(...params);
 }
 
 export async function deleteModelByName(modelName: string) {

@@ -1,19 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-// import * as THREE from "three";
-// import { GLTFLoader, TrackballControls } from "three/examples/jsm/Addons.js";
-// import setupLCC from "../additions/setupLCC";
+import { useEffect, useRef } from "react";
 import { useThreeSetup } from "../hooks/useThreeSetup";
 import { useModelLoader } from "../hooks/useModelLoader";
 
 interface ModelPreview {
-  model: ArrayBuffer;
+  model?: ArrayBuffer | null;
   setExternalError?: (text: string | null) => void;
   size?: {
     x: number;
     y: number;
   };
 }
-//TODO:fix model reloading error, canvas does not creates after file with error was loaded
+
 const ModelPreview = ({ model, size, setExternalError }: ModelPreview) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const { scene } = useThreeSetup(mountRef, size);

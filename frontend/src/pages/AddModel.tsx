@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAddModelMutation } from "../store/model/model.api";
 import ModelPreview from "../components/ModelPreview";
-import { useNavigate } from "react-router-dom";
+import { useActions } from "../hooks/actions";
 
 const AddModel = () => {
   //TODO: Fix model loading after error
   const [modelName, setModelName] = useState("");
   const [modelFile, setModelFile] = useState<ArrayBuffer | null>(null);
+  const [settingsFile, setSettingsFile] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [internalError, setInternalError] = useState<string | null>(null);
   const [addModel, { isLoading }] = useAddModelMutation();
-  const navigate = useNavigate();
+  const actions = useActions();
+
+  useEffect(() => {
+    actions.resetModelState();
+  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -25,9 +30,22 @@ const AddModel = () => {
     }
   };
 
+  const handleFileChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (typeof e.target?.result === "string") {
+          setSettingsFile(e.target.result);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!modelName || !modelFile) {
+    if (!modelName || !modelFile || !settingsFile) {
       setErrorMessage("Пожалуйста, заполните все поля.");
       return;
     }
@@ -36,8 +54,12 @@ const AddModel = () => {
       return;
     }
     try {
-      await addModel({ name: modelName, data: modelFile }).unwrap();
-      navigate("/"); // Перенаправляем на главную страницу после успешной загрузки
+      await addModel({
+        name: modelName,
+        data: modelFile,
+        settings: settingsFile,
+      }).unwrap();
+      // navigate("/"); // Перенаправляем на главную страницу после успешной загрузки
     } catch (error) {
       setErrorMessage("Ошибка при загрузке модели.");
     }
@@ -68,6 +90,18 @@ const AddModel = () => {
             onChange={handleFileChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             accept=".glb"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300">
+            Файл настроек
+          </label>
+          <input
+            type="file"
+            onChange={handleFileChange2}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            accept=".json"
             required
           />
         </div>

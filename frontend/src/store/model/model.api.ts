@@ -16,28 +16,14 @@ export const modelApi = createApi({
       }),
     }),
 
-    // getModelByName: build.query<ArrayBuffer, string>({
-    //   query: (modelName: string) => ({
-    //     url: `/${modelName}`,
-    //     responseHandler: async (response) => {
-    //       const buffer = await response.arrayBuffer();
-    //       return buffer;
-    //     },
-    //   }),
-    // }),
-    // getModelByName: build.query<ServerResponse, string>({
-    //   query: (modelName) => ({
-    //     url: `/${modelName}`,
-    //   }),
-    // }),
-
     addModel: build.mutation<
       ServerResponse,
-      { name: string; data: ArrayBuffer }
+      { name: string; data: ArrayBuffer; settings: string }
     >({
       query: (model) => {
         const formData = new FormData();
         formData.append("name", model.name);
+        formData.append("settings", model.settings);
         formData.append(
           "data",
           new Blob([model.data], { type: "application/octet-stream" })
@@ -53,13 +39,23 @@ export const modelApi = createApi({
 
     updateModelByName: build.mutation<
       ServerResponse,
-      { modelName: string; data: ArrayBuffer }
+      { name: string; data?: ArrayBuffer | null; settings?: string | null }
     >({
-      query: ({ modelName, data }) => ({
-        url: `/${modelName}`,
-        method: "PUT",
-        body: { data },
-      }),
+      query: ({ name, data, settings }) => {
+        const formData = new FormData();
+        formData.append("name", name);
+        if (settings) formData.append("settings", settings);
+        if (data)
+          formData.append(
+            "data",
+            new Blob([data], { type: "application/octet-stream" })
+          );
+        return {
+          url: `/${name}`,
+          method: "PUT",
+          body: formData,
+        };
+      },
     }),
 
     deleteModelByName: build.mutation<ServerResponse, string>({
@@ -73,7 +69,6 @@ export const modelApi = createApi({
 
 export const {
   useGetAllModelNamesQuery,
-  //   useGetModelByNameQuery,
   useAddModelMutation,
   useUpdateModelByNameMutation,
   useDeleteModelByNameMutation,

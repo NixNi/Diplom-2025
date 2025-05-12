@@ -36,14 +36,16 @@
 
 .tabs-viewer.left > .tabs-titles-container > .tab-title {
   padding: 6px;
-  margin-right: 0;
+  margin-right: -1px;
   border-right: 1px white solid;
   opacity: 1;
+  z-index: 2;
 }
 
 .tabs-viewer.left > .tabs-titles-container > .tab-title.active {
   background-color: var(--background);
-  border: 1px var(--light-background) solid;
+  border: 1px var(--background) solid;
   opacity: 1;
+  /* margin-right: -3px; */
   border-right: none;
 }

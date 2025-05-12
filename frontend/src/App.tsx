@@ -4,6 +4,7 @@ import Settings from "./pages/Settings";
 import Connect from "./pages/Connect";
 import Working from "./pages/Working";
 import AddModel from "./pages/AddModel";
+import EditModel from "./pages/EditModel";
 
 function App() {
   return (
@@ -11,10 +12,11 @@ function App() {
       <Navigation />
       <div className="pt-12">
         <Routes>
-          {/* <Route path="/" element={<Viewer />} /> */}
+          <Route path="/" element={<Working />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/connect" element={<Connect />} />
-          <Route path="/" element={<AddModel />} />
+          <Route path="/addModel" element={<AddModel />} />
+          <Route path="/editModel" element={<EditModel />} />
         </Routes>
       </div>
     </div>

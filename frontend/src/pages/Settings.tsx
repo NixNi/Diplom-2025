@@ -4,6 +4,7 @@ import STabViewer from "../components/shared/STabViewer";
 import { useActions } from "../hooks/actions";
 import AddModel from "./AddModel";
 import Viewer from "./Viewer";
+import EditModel from "./EditModel";
 
 export default function Settings() {
   const actions = useActions();
@@ -17,6 +18,9 @@ export default function Settings() {
       </STab>
       <STab title="Загрузить модель">
         <AddModel />
+      </STab>
+      <STab title="Редактировать модель">
+        <EditModel />
       </STab>
     </STabViewer>
   );

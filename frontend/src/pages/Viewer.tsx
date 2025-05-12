@@ -12,6 +12,9 @@ export default function Viewer() {
   >([]);
   const { data, isLoading, isError } = useGetAllModelNamesQuery();
   const actions = useActions();
+  useEffect(() => {
+    actions.resetModelState();
+  }, []);
 
   useEffect(() => {
     if (isLoading || isError) return;

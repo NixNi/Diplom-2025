@@ -110,6 +110,8 @@ export const modelSlice = createSlice({
       state.isEmergencyStoped = false;
       state.isLoadingControls = false;
       state.isErrorControls = false;
+      state.isLoadingData = false;
+      state.isErrorData = false;
       state.errorMessage = null;
     },
     setMode: (state, action: PayloadAction<"online" | "offline">) => {
@@ -123,7 +125,10 @@ export const modelSlice = createSlice({
       state.isEmergencyStoped = false;
       state.isLoadingControls = false;
       state.isErrorControls = false;
+      state.isLoadingData = false;
+      state.isErrorData = false;
       state.errorMessage = null;
+      state.mode = "offline";
       state.name = "default";
     },
     updatePositionsLocal: (state, action: PayloadAction<ModelPositions>) => {

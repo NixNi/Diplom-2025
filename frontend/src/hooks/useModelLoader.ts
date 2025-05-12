@@ -9,7 +9,7 @@ import { useActions } from "./actions";
 
 export const useModelLoader = (
   scene: THREE.Scene,
-  { model: modelPassed }: { model?: ArrayBuffer } = {}
+  { model: modelPassed }: { model?: ArrayBuffer | null } = {}
 ) => {
   const modelRef = useRef<THREE.Object3D | null>(null);
   const [modelData, setModelData] = useState<ArrayBuffer | null>(null);
