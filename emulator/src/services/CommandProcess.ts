@@ -5,7 +5,7 @@ import {
   setParameter,
 } from "../models/parameters";
 import type { Socket } from "socket.io";
-// import io from "./IO";
+
 const step = Number(process.env.step) || 0.1;
 const timeout = Number(process.env.timeout) || 100;
 let proccesses = 0;
@@ -64,6 +64,11 @@ export async function runCommand(socket: Socket, commandObject: Command) {
       socket.broadcast.emit("state", { isControlsEnabled: 0 });
       proccesses += 1;
       const intervalID = setInterval(async () => {
+        if (await getParameter("isEmergencyStoped")) {
+          proccesses -= 1;
+          clearInterval(intervalID);
+          return;
+        }
         const currentValue = (await getParameter(path)) || 0;
         // console.log(path, currentValue, value);
         if (currentValue !== value) {
