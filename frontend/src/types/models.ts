@@ -35,6 +35,10 @@ export interface JoystickControlElement {
   props: {
     xpath: string;
     ypath: string;
+    topImg?: string;
+    bottomImg?: string;
+    leftImg?: string;
+    rightImg?: string;
   };
 }
 
@@ -57,6 +61,10 @@ export interface SArrowButtonsElement {
   props: {
     type: "up/down" | "left/right";
     path: string;
+    topImg?: string;
+    bottomImg?: string;
+    leftImg?: string;
+    rightImg?: string;
   };
 }
 

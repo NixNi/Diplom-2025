@@ -4,11 +4,10 @@ import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystic
 import { useState, useEffect } from "react";
 import { useActions } from "../../hooks/actions";
 import { useGetCanControl } from "../../hooks/model";
-// import { sendModelCommandAsync } from "../../store/model/model.slice";
+
 export interface SControlJoystic {
   element: JoystickControlElement;
 }
-
 export default function SControlJoystic({ element }: SControlJoystic) {
   const actions = useActions();
   const enabled = useGetCanControl();
@@ -53,7 +52,6 @@ export default function SControlJoystic({ element }: SControlJoystic) {
       }, 100);
     }
 
-    // Очистка интервала при изменении состояния или размонтировании
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
@@ -62,16 +60,75 @@ export default function SControlJoystic({ element }: SControlJoystic) {
   }, [joystickState]);
 
   return (
-    <div className="m-2">
-      <Joystick
-        throttle={100}
-        stickColor="var(--secondary)"
-        baseColor="var(--secondary-dark)"
-        move={(e) => setJoystickState(e)}
-        start={(e) => setJoystickState(e)}
-        stop={() => setJoystickState(null)}
-        disabled={!enabled}
-      />
+    <div
+      className="joystick-grid"
+      style={{
+        display: "grid",
+        gridTemplateRows: "auto 1fr auto",
+        gridTemplateColumns: "auto 1fr auto",
+        gap: "10px",
+        alignItems: "center",
+        justifyItems: "center",
+        width: "200px",
+        margin: "2rem auto",
+      }}
+    >
+      {/* Top Image */}
+      <div style={{ gridColumn: "2", gridRow: "1" }}>
+        {element.props.topImg && (
+          <img
+            src={element.props.topImg}
+            alt="Top"
+            style={{ width: 30, height: 30 }}
+          />
+        )}
+      </div>
+
+      {/* Left Image */}
+      <div style={{ gridColumn: "1", gridRow: "2" }}>
+        {element.props.leftImg && (
+          <img
+            src={element.props.leftImg}
+            alt="Left"
+            style={{ width: 30, height: 30 }}
+          />
+        )}
+      </div>
+
+      {/* Joystick */}
+      <div style={{ gridColumn: "2", gridRow: "2" }}>
+        <Joystick
+          throttle={100}
+          stickColor="var(--secondary)"
+          baseColor="var(--secondary-dark)"
+          move={(e) => setJoystickState(e)}
+          start={(e) => setJoystickState(e)}
+          stop={() => setJoystickState(null)}
+          disabled={!enabled}
+        />
+      </div>
+
+      {/* Right Image */}
+      <div style={{ gridColumn: "3", gridRow: "2" }}>
+        {element.props.rightImg && (
+          <img
+            src={element.props.rightImg}
+            alt="Right"
+            style={{ width: 30, height: 30 }}
+          />
+        )}
+      </div>
+
+      {/* Bottom Image */}
+      <div style={{ gridColumn: "2", gridRow: "3" }}>
+        {element.props.bottomImg && (
+          <img
+            src={element.props.bottomImg}
+            alt="Bottom"
+            style={{ width: 30, height: 30 }}
+          />
+        )}
+      </div>
     </div>
   );
 }

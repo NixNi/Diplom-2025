@@ -41,7 +41,11 @@
       "position": "Center",
       "props": {
         "xpath": "Стол/position/z",
-        "ypath": "Вертикальная_каретка/position/y"
+        "ypath": "Вертикальная_каретка/position/y",
+        "topImg": "/more_ver.png",
+        "bottomImg": "/less_ver.png",
+        "leftImg": "/Hor_left.png",
+        "rightImg": "/Hor_right.png"
       }
     },
     {
@@ -50,7 +54,11 @@
       "position": "Center",
       "props": {
         "xpath": "Основание_Рентгена/position/z",
-        "ypath": "Вертикальная_поверхность/position/y"
+        "ypath": "Вертикальная_поверхность/position/y",
+        "topImg": "/Hor_up.png",
+        "bottomImg": "/Hor_down.png",
+        "leftImg": "/less_hor.png",
+        "rightImg": "/more_hor.png"
       }
     },
     {
@@ -129,7 +137,9 @@
       "position": "BottomLeft",
       "props": {
         "type": "up/down",
-        "path": "Горизонтальная_ось_1/rotation/x"
+        "path": "Горизонтальная_ось_1/rotation/x",
+        "topImg": "/turn_left.png",
+        "bottomImg": "/turn_right.png"
       }
     },
     {
