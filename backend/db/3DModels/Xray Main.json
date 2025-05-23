@@ -1,0 +1,102 @@
+{
+  "models": {
+    "TableHandler": {
+      "position": {
+        "x": [-1, 1]
+      }
+    },
+    "Table": {
+      "position": {
+        "z": [0.18, 0.58]
+      }
+    },
+    "Piston": {
+      "position": {
+        "y": [1.3447, 1.91]
+      }
+    },
+    "Rotator": {
+      "rotation": {
+        "y": [-1.570796, 1.570796]
+      }
+    },
+    "MainBox": {
+      "position": {
+        "y": [1.92, 2.68]
+      }
+    },
+    "MainHandler": {
+      "rotation": {
+        "z": [-0.5235, 0.5235]
+      }
+    }
+  },
+  "controlElements": [
+    {
+      "name": "DeskMovement",
+      "element": "Joystick",
+      "position": "Center",
+      "props": {
+        "xpath": "Стол/position/z",
+        "ypath": "Вертикальная_каретка/position/y",
+        "topImg": "/more_ver.png",
+        "bottomImg": "/less_ver.png",
+        "leftImg": "/Hor_left.png",
+        "rightImg": "/Hor_right.png"
+      }
+    },
+    {
+      "name": "VerticalDeskMovement",
+      "element": "Joystick",
+      "position": "Center",
+      "props": {
+        "xpath": "Основание_Рентгена/position/z",
+        "ypath": "Вертикальная_поверхность/position/y",
+        "topImg": "/Hor_up.png",
+        "bottomImg": "/Hor_down.png",
+        "leftImg": "/less_hor.png",
+        "rightImg": "/more_hor.png"
+      }
+    },
+    {
+      "name": "Горизонтальный вид",
+      "element": "setButton",
+      "position": "Bottom",
+      "props": {
+        "values": []
+      }
+    },
+    {
+      "name": "Вертикальный вид",
+      "element": "setButton",
+      "position": "Bottom",
+      "props": {
+        "values": []
+      }
+    },
+    {
+      "name": "Rotate Head X",
+      "element": "ArrowButtons",
+      "position": "BottomLeft",
+      "props": {
+        "type": "up/down",
+        "path": "Горизонтальная_ось_1/rotation/x",
+        "topImg": "/turn_left.png",
+        "bottomImg": "/turn_right.png"
+      }
+    },
+    {
+      "name": "Power",
+      "element": "PowerButton",
+      "position": "TopLeft",
+      "props": {
+        "values": []
+      }
+    },
+    {
+      "name": "Stop",
+      "position": "TopRight",
+      "element": "EmergencyStop"
+    }
+  ]
+}
