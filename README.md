@@ -1,5 +1,5 @@
 # X-ray work visualizer
-Diplom work for SUAI bachelor grade. (2025)  
+Bachelor's thesis for SUAI graduation, 2025    
 Web interface with the ability to control a 3D projection of an X-ray machine.  
 
 ## Setup
